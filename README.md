@@ -1,9 +1,9 @@
 # PUH 2014/2015 - Programming in Haskell
-## Course Project - *original name Hash*
+### Course Project - Hash
 
 Pljuska
 ========
-PuH Ljuska
+*PuH Ljuska*
 
 
 ### Milestones
