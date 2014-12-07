@@ -1,5 +1,4 @@
-# PUH 2014/2015 - Programming in Haskell
-### Course Project - Hash
+### PUH 2014/2015 Course Project - Hash
 
 Pljuska
 ========
