@@ -1,0 +1,112 @@
+Pljuska
+======================
+
+Building blocks
+    -   Environment
+    -   Variables
+    -   Commands / Statements
+
+
+
+
+Libraries
+======================
+System.Console.ANSI
+System.Directory
+System.IO
+System.Posix.Files
+
+
+
+Commands
+======================
+
+    Control statements
+    --------------------------
+
+    *   if-then-else-fi blocks
+    *   for
+    *   while
+
+
+    File management
+    --------------------------
+
+    *   mv
+    *   cp
+    *   rm
+    *   touch
+    *   rmdir
+    *   chmod
+
+    *   ls
+    *   cd
+    *   pwd
+
+    *   cat
+    *   hexdump
+
+    *   simple filename pattern matching
+
+
+    Variables
+    ---------------------------
+
+    *   assignment
+    *   arithmetics
+    *   string ops
+
+    *   echo
+
+
+    Misc
+    ----------------------------
+
+    *   grep
+    *   blank
+
+
+    Meta commands
+    ----------------------------
+
+    * dump      --  display all the variables with their values
+
+    - Comments
+
+
+Options
+=======================
+
+    *   Piping
+    *   IO Redirection
+    *   Configuration file
+
+
+Structure
+=======================
+|- Main.hs
+|-
+|- Language
+    |- Definitions
+    |- Environment
+    |- Blocks
+        |- If
+        |- For
+        |- While
+        |-
+    |- Commands
+        |- Filesystem
+        |- Environment
+        |-
+|- Parser
+
+
+
+Results
+======================
+1. A shell interpreter executable
+
+2. Hash library with an externally visible functions:
+
+    * runInteractive() :: IO ()
+    * runScript() :: FilePath -> IO ()
