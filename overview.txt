@@ -85,20 +85,23 @@ Options
 Structure
 =======================
 |- Main.hs
-|-
+|- Hash.hs
 |- Language
-    |- Definitions
-    |- Environment
-    |- Blocks
-        |- If
-        |- For
-        |- While
-        |-
+    |- Definitions.hs
+    |- Blocks.hs
+    |- Core
+        |- Operators
     |- Commands
         |- Filesystem
-        |- Environment
-        |-
-|- Parser
+        |- Misc
+|- Interpreter
+    |- Environment.hs
+    |- Guilotine.hs
+    |- Utility.hs
+|- Parsing
+    |- TokenParsers.hs
+    |- TreeBuilder.hs
+
 
 
 
