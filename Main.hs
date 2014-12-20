@@ -1,14 +1,8 @@
-{-
-    Main.hs
-    ================================
-        Main project file
-
-
--}
-
---import Hash;
+import Hash;
 --import Testing.Parse
+import Language.Definitions
 
-main :: IO ()
+
+--main :: IO ()
 main = do
-    print "Main"
+    test

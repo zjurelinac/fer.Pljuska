@@ -7,6 +7,16 @@ data PrimitiveType  = IntValue Int
                     | StringValue String
                     deriving ( Show )
 
+-- Convert a PrimitiveType to string
+toString :: PrimitiveType -> String
+toString ( IntValue i ) = show i
+toString ( StringValue s ) = s
+
+toInt :: PrimitiveType -> Int
+toInt ( IntValue i ) = i
+toInt ( StringValue s ) = read s :: Int
+
+
 -- A definition of variable
 data Variable       = Variable String
                     deriving ( Show )
@@ -17,8 +27,7 @@ type VarTable       = M.Map String PrimitiveType
 -- Script execution environment
 data Environment    = Environment {
                         currentDirectory    :: FilePath,
-                        variables           :: VarTable,
-                        executionStatus     :: Status
+                        variables           :: VarTable
                     } deriving ( Show )
 
 -- Language values
@@ -26,21 +35,11 @@ data Data           = VarData Variable
                     | StaticData PrimitiveType
                     deriving ( Show )
 
--- Current environment status
-data Status         = StatusOK
-                    | StatusError Error
-                    deriving ( Show )
-
--- Possible errors
-data Error          = IOError String          -- Some IO operation went wrong
-                    | CallError String        -- Wrong command call
-                    | ArithmeticError String  -- Impossible arithmetic operation, like division by zero
-                    | TypeError String        -- Operator or an assignment got the wrong type
-                    | UnknownError String     -- Everything else
-                    deriving ( Show )
+defaultReturn :: PrimitiveType
+defaultReturn = IntValue 0
 
 -- Data type of each command function
-type CommandFunction    = ( [ PrimitiveType ] -> IO ( Either Error PrimitiveType ) )
+type CommandFunction    = ( Environment -> [ PrimitiveType ] -> IO ( PrimitiveType, Environment ) )
 
 -- A basic command definition
 data BasicCommand   = BasicCommand {
@@ -49,7 +48,8 @@ data BasicCommand   = BasicCommand {
                         environment     :: Environment,
                         inputStream     :: Maybe Data,
                         outputStream    :: Maybe Data,
-                        append          :: Bool
+                        append          :: Bool,
+                        displayOutput   :: Bool
                     } deriving ( Show )
 
 -- Command definition that allows chaining

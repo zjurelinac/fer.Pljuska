@@ -32,21 +32,23 @@ Commands
     File management
     --------------------------
 
-    *   mv
-    *   cp
-    *   rm
-    *   touch
-    *   rmdir
+    *   mv          --OK
+    *   cp          --OK
+    *   rm          --OK
+    *   create      --OK
+    *   rmdir       --OK
+    *   mvdir
+    *   cpdir
     *   chmod
 
-    *   ls
-    *   cd
-    *   pwd
+    *   ls          --OK
+    *   cd          --OK
+    *   pwd         --OK
 
-    *   cat
-    *   hexdump
+    *   cat         --OK
+    *   hexdump     --OK
 
-    *   simple filename pattern matching
+    *   simple filename pattern matching --nope
 
 
     Variables
@@ -65,12 +67,6 @@ Commands
     *   grep
     *   blank
 
-
-    Meta commands
-    ----------------------------
-
-    * dump      --  display all the variables with their values
-
     - Comments
 
 
@@ -80,28 +76,6 @@ Options
     *   Piping
     *   IO Redirection
     *   Configuration file
-
-
-Structure
-=======================
-|- Main.hs
-|- Hash.hs
-|- Language
-    |- Definitions.hs
-    |- Blocks.hs
-    |- Core
-        |- Operators
-    |- Commands
-        |- Filesystem
-        |- Misc
-|- Interpreter
-    |- Environment.hs
-    |- Guilotine.hs
-    |- Utility.hs
-|- Parsing
-    |- TokenParsers.hs
-    |- TreeBuilder.hs
-
 
 
 
