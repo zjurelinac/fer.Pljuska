@@ -4,6 +4,7 @@ module Hash(
     test
 ) where
 
+import Language.Core
 import Language.Definitions
 import Language.Commands.Basic
 import Language.Commands.Filesystem
@@ -52,7 +53,7 @@ test = do
     ( _, env ) <- createCommand env [ StringValue "asdf.txt" ]
     ( r6, env ) <- lsCommand env []
     putStrLn $ toString r6
-    ( _, env ) <- rmCommand env [ StringValue "test/asdf.txt" ]
-    ( _, env ) <- rmdirCommand env [ StringValue "test" ]
+    --( _, env ) <- rmCommand env [ StringValue "test/asdf.txt" ]
+    ( _, env ) <- mvdirCommand env [ StringValue "Test", StringValue "Else", StringValue "Dest" ]
     putStrLn $ errorString "HASH Ending..."
 

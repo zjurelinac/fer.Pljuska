@@ -2,19 +2,21 @@ module Language.Definitions where
 
 import qualified Data.Map as M
 
+
+-- Definition of an evaluable typeclass
+class Evaluable a where
+    evaluate :: Environment -> a -> PrimitiveType
+
+
+-- Definition of an executable typeclass
+class Executable a where
+    execute :: Environment -> a -> ( PrimitiveType, Environment )
+
+
 -- Value containers, supporting integers and strings
 data PrimitiveType  = IntValue Int
                     | StringValue String
                     deriving ( Show )
-
--- Convert a PrimitiveType to string
-toString :: PrimitiveType -> String
-toString ( IntValue i ) = show i
-toString ( StringValue s ) = s
-
-toInt :: PrimitiveType -> Int
-toInt ( IntValue i ) = i
-toInt ( StringValue s ) = read s :: Int
 
 
 -- A definition of variable

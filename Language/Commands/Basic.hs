@@ -11,6 +11,7 @@ import Data.List
 import qualified Data.ByteString.Lazy as BL
 import System.Directory
 
+import Language.Core
 import Language.Definitions
 import Utility.Data
 import Utility.File
@@ -26,7 +27,7 @@ catCommand env args = do
 cdCommand :: CommandFunction
 cdCommand env args
     | length args == 0      = do
-        let f = getHomeDirectory
+        f <- getHomeDirectory
         setCurrentDirectory f
         return ( defaultReturn, env { currentDirectory = f } )
     | otherwise             = do

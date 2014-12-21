@@ -37,8 +37,8 @@ Commands
     *   rm          --OK
     *   create      --OK
     *   rmdir       --OK
-    *   mvdir
-    *   cpdir
+    *   mvdir       --OK
+    *   cpdir       --Possible problem, no such function
     *   chmod
 
     *   ls          --OK
