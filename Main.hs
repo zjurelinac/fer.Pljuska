@@ -4,5 +4,4 @@ import Language.Definitions
 
 
 --main :: IO ()
-main = do
-    test
+main = runTest

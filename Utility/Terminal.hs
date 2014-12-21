@@ -3,6 +3,7 @@ module Utility.Terminal (
     Style (..),
     Weight (..),
     errorString,
+    infoString,
     styledString
 ) where
 
@@ -47,3 +48,7 @@ styledString s str = styleSeq s ++ str ++ resetCode
 
 errorString :: String -> String
 errorString = styledString ( Style Red Bold )
+
+
+infoString :: String -> String
+infoString = styledString ( Style Blue Normal )
