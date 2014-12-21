@@ -1,6 +1,6 @@
 module Language.Core where
 
-
+import Control.Monad
 import qualified Data.Map as M
 import Data.Maybe
 
@@ -116,17 +116,35 @@ instance Executable BasicCommand where
         return ( val, env' )
 
 
+-- Execute any command
+instance Executable Command where
+    execute env ( Basic bc )            = execute env bc
+    --execute env ( PipedCommand bc c )   = do
+
+
 -- Execute an expression
 instance Executable Expression where
-      execute env exp = return $ ( NoValue, env )
+      execute env ( AssignmentExpr a )  = execute env a
+      execute env ( BlockExpr b )       = execute env b
+      execute env ( ArithmeticExpr ar ) = return $ ( evaluate env ar, env )
+      execute env ( CommandExpr c )     = execute env c
+      execute env ( DataExpr d )        = return $ ( evaluate env d, env )
+      execute env ( VoidExpr )          = return $ ( NoValue, env)
 
 
+-- Execute a block of commands
+instance Executable Block where
+    execute env ( BasicBlock bs ) = foldM ( execute . snd ) ( NoValue, env ) bs
 
--- -- Executing an expression
--- instance Executable Expression where
+    execute env ( IfBlock cond b1 b2 )
+        | test env cond     =   execute env b1
+        | otherwise         =   execute env b2
+
+    execute env wb@( WhileBlock cond bs )
+         | test env cond     =   execute env bs >>= ( flip execute wb . snd )
 
 
---
+-- Preprocess function arguments
 preprocessArgs :: Environment -> BasicCommand -> IO [ PrimitiveType ]
 preprocessArgs env cmd = do
     let cargs = map ( evaluate env ) ( args cmd )
@@ -141,7 +159,7 @@ preprocessArgs env cmd = do
                 return $ reverse $ ( StringValue s : xs )
 
 
---
+-- Output the results of a command execution to a proper place ( stdout, file or nowhere )
 outputResults :: Environment -> String -> Bool -> Maybe Data -> Bool -> IO ()
 outputResults _ _ False _ _           = return ()
 outputResults _ s _ Nothing _         = putStrLn s

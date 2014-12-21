@@ -62,12 +62,21 @@ runTest = do
 
 runAdditionalTests :: Environment -> IO ()
 runAdditionalTests env = do
-    let lsCmd = BasicCommand "ls" [] Nothing Nothing False True
-    let cdCmd = BasicCommand "cd" [ StaticData $ StringValue "Testing" ] Nothing Nothing False True
-    let pwdCmd= BasicCommand "pwd" [] Nothing ( Just $ StaticData $ StringValue "pwd.txt" ) True True
-    ( v1, env ) <- execute env lsCmd
-    ( v2, env ) <- execute env cdCmd
-    ( v3, env ) <- execute env lsCmd
-    ( v4, env ) <- execute env pwdCmd
+    --let lsCmd   = CommandExpr $ Basic $ BasicCommand "ls" [] Nothing Nothing False True
+    let cdCmd   = CommandExpr $ Basic $ BasicCommand "cd" [] Nothing Nothing False True
+    let pwdCmd  = CommandExpr $ Basic $ BasicCommand "pwd" [] Nothing Nothing True False --( Just $ StaticData $ StringValue "pwd.txt" )
+    let a1      = AssignmentExpr $ Assignment ( Variable "x" ) ( DataExpr $ StaticData $ IntValue 1 )
+    let a2      = AssignmentExpr $ Assignment ( Variable "x" ) ( ArithmeticExpr $ Arithmetic Modulo ( Value $ VarData $ Variable "x" ) ( Value $ StaticData $ IntValue 3 ) )
+    let echoCmd = CommandExpr $ Basic $ BasicCommand "echo" [ VarData $ Variable "x" ] Nothing Nothing False True
+    -- let c1      = BasicCondition Lesser ( StaticData $ StringValue "ab" ) ( StaticData $ StringValue "aaa" )
+    let bb      = BasicBlock [ cdCmd, a1, echoCmd, a2, echoCmd ]
+    -- let ib      = IfBlock c1 bb ( BasicBlock [ VoidExpr ] )
+    ( v1, env ) <- execute env bb
+    --( v1, env ) <- execute env lsCmd
+    --( v2, env ) <- execute env cdCmd
+    --( v3, env ) <- execute env lsCmd
+    --( v4, env ) <- execute env pwdCmd
+
+
     --putStrLn $ toString v
     return ()
