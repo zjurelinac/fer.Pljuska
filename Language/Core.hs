@@ -1,20 +1,11 @@
 module Language.Core where
 
-import Language.Definitions
 
 import qualified Data.Map as M
 import Data.Maybe
 
-
--- Convert a PrimitiveType to a String
-toString :: PrimitiveType -> String
-toString ( IntValue i ) = show i
-toString ( StringValue s ) = s
-
-
-toInt :: PrimitiveType -> Int
-toInt ( IntValue i ) = i
-toInt ( StringValue s ) = read s :: Int
+import Language.Definitions
+import Utility.Data
 
 
 -- Evaluating a variable
@@ -23,7 +14,16 @@ instance Evaluable Data where
         | isNothing val = error $ "Value of " ++ var ++ " not previously defined."
         | otherwise     = fromJust val
         where   val = M.lookup var ( variables env )
-    evaluate env ( StaticData pt )   = pt
+    evaluate env ( StaticData pt )   =
+        case pt of
+            IntValue i      -> IntValue i
+            StringValue s   -> StringValue $ parseString env s
+            _               -> error $ "Cannot evaluate " ++ show pt
+
+
+-- Parse string - replace all occurences of an '$variable' with it's value
+parseString :: Environment -> String -> String
+parseString env s = s
 
 
 -- Basic operations on primitive values
@@ -98,11 +98,54 @@ instance Evaluable Arithmetic where
                 v2 = evaluate env a2
 
 
--- -- Evaluating an expression
--- instance Evaluable Expression where
---     evaluate env
+-- Execute an assignment
+instance Executable Assignment where
+    execute env ( Assignment ( Variable var ) exp )  = do
+        ( val, env' ) <- execute env exp
+        let nenv = env' { variables = M.insert var val ( variables env' ) }
+        return $ ( val, nenv )
+
+
+-- Execute a basic command
+instance Executable BasicCommand where
+     execute env cmd = do
+        cargs <- preprocessArgs env cmd
+        let command = commandList env M.! ( cmdName cmd )
+        ( val, env' ) <- command env cargs
+        outputResults env' ( toString val ) ( displayOutput cmd ) ( outputStream cmd ) ( append cmd )
+        return ( val, env' )
+
+
+-- Execute an expression
+instance Executable Expression where
+      execute env exp = return $ ( NoValue, env )
+
 
 
 -- -- Executing an expression
 -- instance Executable Expression where
 
+
+--
+preprocessArgs :: Environment -> BasicCommand -> IO [ PrimitiveType ]
+preprocessArgs env cmd = do
+    let cargs = map ( evaluate env ) ( args cmd )
+    cargs' <- obtainFromFile cargs ( inputStream cmd )
+    return cargs'
+    where
+            obtainFromFile :: [ PrimitiveType ] -> Maybe Data -> IO [ PrimitiveType ]
+            obtainFromFile xs Nothing = return $ xs
+            obtainFromFile xs ( Just d ) = do
+                let fn = toString $ evaluate env d
+                s <- readFile fn
+                return $ reverse $ ( StringValue s : xs )
+
+
+--
+outputResults :: Environment -> String -> Bool -> Maybe Data -> Bool -> IO ()
+outputResults _ _ False _ _           = return ()
+outputResults _ s _ Nothing _         = putStrLn s
+outputResults env s o ( Just d ) a    = do
+    let fn = toString $ evaluate env d
+    if a then appendFile fn ( s ++ "\n" )
+         else writeFile fn ( s ++ "\n" )

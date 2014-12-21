@@ -11,6 +11,7 @@ import Language.Commands.Filesystem
 
 import Interpreter
 import Utility.Console
+import Utility.Data
 import Utility.Terminal
 
 runInteractive :: IO ()
@@ -61,8 +62,12 @@ runTest = do
 
 runAdditionalTests :: Environment -> IO ()
 runAdditionalTests env = do
-    let a = IntValue 1
-    let b = IntValue 1
-    let c = BasicCondition Equals ( StaticData a ) ( StaticData b )
-    print $ test env c
-    putStrLn $ infoString "Additional Tests Completed."
+    let lsCmd = BasicCommand "ls" [] Nothing Nothing False True
+    let cdCmd = BasicCommand "cd" [ StaticData $ StringValue "Testing" ] Nothing Nothing False True
+    let pwdCmd= BasicCommand "pwd" [] Nothing ( Just $ StaticData $ StringValue "pwd.txt" ) True True
+    ( v1, env ) <- execute env lsCmd
+    ( v2, env ) <- execute env cdCmd
+    ( v3, env ) <- execute env lsCmd
+    ( v4, env ) <- execute env pwdCmd
+    --putStrLn $ toString v
+    return ()

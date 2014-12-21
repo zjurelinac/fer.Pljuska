@@ -11,53 +11,53 @@ module Language.Commands.Filesystem (
 import Data.List
 import System.Directory
 
-import Language.Core
 import Language.Definitions
+import Utility.Data
 import Utility.File
 
 mvCommand :: CommandFunction
 mvCommand env args
     | length args == 2  = do
         renameFile ( toString $ head args ) ( toString $ last args )
-        return ( defaultReturn, env )
+        return ( NoValue, env )
     | otherwise         = do
         let dest = directorize . toString $ last args
         mapM_ ( \x -> renameFile x ( dest ++ x ) ) $ map toString $ init args
-        return ( defaultReturn, env )
+        return ( NoValue, env )
 
 
 cpCommand :: CommandFunction
 cpCommand env args
     | length args == 2  = do
         copyFile ( toString $ head args ) ( toString $ last args )
-        return ( defaultReturn, env )
+        return ( NoValue, env )
     | otherwise         = do
         let dest = directorize . toString $ last args
         mapM_ ( \x -> copyFile x ( dest ++ x ) ) $ map toString $ init args
-        return ( defaultReturn, env )
+        return ( NoValue, env )
 
 
 createCommand :: CommandFunction
 createCommand env args = do
     mapM_ ( flip writeFile "" ) $ map toString args
-    return ( defaultReturn, env )
+    return ( NoValue, env )
 
 
 rmCommand :: CommandFunction
 rmCommand env args = do
     mapM_ removeFile $ map toString args
-    return ( defaultReturn, env )
+    return ( NoValue, env )
 
 
 mvdirCommand :: CommandFunction
 mvdirCommand env args
     | length args == 2      = do
         renameDirectory ( toString $ head args ) ( toString $ last args )
-        return ( defaultReturn, env )
+        return ( NoValue, env )
     | otherwise             = do
         let dest = directorize . toString $ last args
         mapM_ ( \x -> renameDirectory x ( dest ++ x ) ) $ map toString $ init args
-        return ( defaultReturn, env )
+        return ( NoValue, env )
 
 
 -- cpdirCommand :: CommandFunction
@@ -74,13 +74,13 @@ mvdirCommand env args
 mkdirCommand :: CommandFunction
 mkdirCommand env args = do
     mapM_ createDirectory $ map toString args
-    return ( defaultReturn, env )
+    return ( NoValue, env )
 
 
 rmdirCommand :: CommandFunction
 rmdirCommand env args = do
     mapM_ removeDirectory $ map toString args
-    return ( defaultReturn, env )
+    return ( NoValue, env )
 
 
 -- chmodCommand :: CommandFunction

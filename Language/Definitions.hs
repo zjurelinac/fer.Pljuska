@@ -3,17 +3,17 @@ module Language.Definitions where
 import qualified Data.Map as M
 
 
--- Definition of an evaluable typeclass
+-- Definition of an evaluable typeclass - returns a single value only, doesn't change the environment state
 class Evaluable a where
     evaluate :: Environment -> a -> PrimitiveType
 
 
--- Definition of an executable typeclass
+-- Definition of an executable typeclass - returns both a value and a changed environment
 class Executable a where
-    execute :: Environment -> a -> ( PrimitiveType, Environment )
+    execute :: Environment -> a -> IO ( PrimitiveType, Environment )
 
 
--- Definition of a testable typeclass
+-- Definition of a testable typeclass - evaluates to a boolean value
 class Testable a where
     test :: Environment -> a -> Bool
 
@@ -21,6 +21,7 @@ class Testable a where
 -- Value containers, supporting integers and strings
 data PrimitiveType  = IntValue Int
                     | StringValue String
+                    | NoValue
                     deriving ( Show )
 
 
@@ -33,11 +34,19 @@ data Variable       = Variable String
 type VarTable       = M.Map String PrimitiveType
 
 
+-- A definition of a list of available commands
+type CommandList    = M.Map String CommandFunction
+
+
 -- Script execution environment
 data Environment    = Environment {
+                        commandList         :: CommandList,
                         currentDirectory    :: FilePath,
                         variables           :: VarTable
-                    } deriving ( Show )
+                    }
+
+instance Show Environment where
+    show env = "Environment\ncd := " ++ ( currentDirectory env )
 
 
 -- Language values
@@ -46,19 +55,15 @@ data Data           = VarData Variable
                     deriving ( Show )
 
 
-defaultReturn :: PrimitiveType
-defaultReturn = IntValue 0
-
-
 -- Data type of each command function
 type CommandFunction    = ( Environment -> [ PrimitiveType ] -> IO ( PrimitiveType, Environment ) )
+
 
 
 -- A basic command definition
 data BasicCommand   = BasicCommand {
                         cmdName         :: String,
                         args            :: [ Data ],
-                        environment     :: Environment,
                         inputStream     :: Maybe Data,
                         outputStream    :: Maybe Data,
                         append          :: Bool,

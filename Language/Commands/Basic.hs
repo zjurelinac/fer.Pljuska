@@ -11,7 +11,6 @@ import Data.List
 import qualified Data.ByteString.Lazy as BL
 import System.Directory
 
-import Language.Core
 import Language.Definitions
 import Utility.Data
 import Utility.File
@@ -29,11 +28,11 @@ cdCommand env args
     | length args == 0      = do
         f <- getHomeDirectory
         setCurrentDirectory f
-        return ( defaultReturn, env { currentDirectory = f } )
+        return ( NoValue, env { currentDirectory = f } )
     | otherwise             = do
         let f = getAbsolutePath ( currentDirectory env ) ( toString $ head args )
         setCurrentDirectory f
-        return ( defaultReturn, env { currentDirectory = f } )
+        return ( NoValue, env { currentDirectory = f } )
 
 
 echoCommand :: CommandFunction

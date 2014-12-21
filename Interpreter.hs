@@ -7,13 +7,29 @@ import System.Directory
 
 import Language.Core
 import Language.Definitions
+import Language.Commands.Basic
+import Language.Commands.Filesystem
 
 
+defaultCommands :: CommandList
+defaultCommands = M.fromList [
+                ( "cat",        catCommand      ),
+                ( "cd",         cdCommand       ),
+                ( "cp",         cpCommand       ),
+                --( "cpdir",      cpdirCommand    ),
+                ( "create",     createCommand   ),
+                ( "dir",        lsCommand       ),
+                ( "echo",       echoCommand     ),
+                ( "hexdump",    hexdumpCommand  ),
+                ( "ls",         lsCommand       ),
+                ( "mkdir",      mkdirCommand    ),
+                ( "mv",         mvCommand       ),
+                ( "mvdir",      mvdirCommand    ),
+                ( "pwd",        pwdCommand      ),
+                ( "rm",         rmCommand       ),
+                ( "rmdir",      rmdirCommand    )
+            ]
 
-
-
-stringParse :: Environment -> PrimitiveType -> PrimitiveType
-stringParse env ( StringValue str ) = StringValue str
 
 
 -- Create a new, blank environment, from the current directory
@@ -21,6 +37,7 @@ blankEnvironment :: IO Environment
 blankEnvironment = do
     fp <- getCurrentDirectory
     return $ Environment {
+        commandList = defaultCommands,
         currentDirectory = fp,
         variables = M.empty }
 
