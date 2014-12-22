@@ -103,34 +103,40 @@ instance Executable Assignment where
     execute env ( Assignment ( Variable var ) exp )  = do
         ( val, env' ) <- execute env exp
         let nenv = env' { variables = M.insert var val ( variables env' ) }
-        return $ ( val, nenv )
+        return $ ( val, nenv { lastReturn = val } )
 
 
 -- Execute a basic command
 instance Executable BasicCommand where
      execute env cmd = do
         cargs <- preprocessArgs env cmd
+        cargs' <- if pipedInto cmd
+            then return $ cargs ++ [ lastReturn env ]
+            else return cargs
         let command = commandList env M.! ( cmdName cmd )
-        ( val, env' ) <- command env cargs
+        ( val, env' ) <- command env cargs'
         outputResults env' ( toString val ) ( displayOutput cmd ) ( outputStream cmd ) ( append cmd )
-        return ( val, env' )
+        return ( val, env' { lastReturn = val } )
 
 
 -- Execute any command
 instance Executable Command where
     execute env ( Basic bc )            = execute env bc
-    -- execute env ( PipedCommand bc c )   = do
-    --     ( val, env' ) <- execute env $ bc { displayOutput = False }
+    execute env ( PipedCommand bc c )   = do
+        ( val, env' ) <- execute env bc
+        execute env' c
 
 
 -- Execute an expression
 instance Executable Expression where
-      execute env ( AssignmentExpr a )  = execute env a
-      execute env ( BlockExpr b )       = execute env b
-      execute env ( ArithmeticExpr ar ) = return $ ( evaluate env ar, env )
-      execute env ( CommandExpr c )     = execute env c
-      execute env ( DataExpr d )        = return $ ( evaluate env d, env )
-      execute env ( VoidExpr )          = return $ ( NoValue, env)
+    execute env ( AssignmentExpr a )  = execute env a
+    execute env ( BlockExpr b )       = execute env b
+    execute env ( ArithmeticExpr ar ) = do
+        let val = evaluate env ar
+        return $ ( val, env { lastReturn = val } )
+    execute env ( CommandExpr c )     = execute env c
+    execute env ( DataExpr d )        = return $ ( evaluate env d, env )
+    execute env ( VoidExpr )          = return $ ( NoValue, env { lastReturn = NoValue } )
 
 
 -- Execute a block of commands

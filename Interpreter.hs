@@ -39,7 +39,7 @@ blankEnvironment = do
     return $ Environment {
         commandList         = defaultCommands,
         currentDirectory    = fp,
-        lastOutput          = NoValue,
+        lastReturn          = NoValue,
         variables           = M.empty }
 
 

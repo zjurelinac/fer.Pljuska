@@ -42,7 +42,7 @@ type CommandList    = M.Map String CommandFunction
 data Environment    = Environment {
                         commandList         :: CommandList,
                         currentDirectory    :: FilePath,
-                        lastOutput          :: PrimitiveType,
+                        lastReturn          :: PrimitiveType,
                         variables           :: VarTable
                     }
 
