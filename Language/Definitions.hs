@@ -42,6 +42,7 @@ type CommandList    = M.Map String CommandFunction
 data Environment    = Environment {
                         commandList         :: CommandList,
                         currentDirectory    :: FilePath,
+                        lastOutput          :: PrimitiveType,
                         variables           :: VarTable
                     }
 
@@ -67,7 +68,8 @@ data BasicCommand   = BasicCommand {
                         inputStream     :: Maybe Data,
                         outputStream    :: Maybe Data,
                         append          :: Bool,
-                        displayOutput   :: Bool
+                        displayOutput   :: Bool,
+                        pipedInto       :: Bool
                     } deriving ( Show )
 
 

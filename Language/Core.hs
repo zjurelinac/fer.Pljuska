@@ -119,7 +119,8 @@ instance Executable BasicCommand where
 -- Execute any command
 instance Executable Command where
     execute env ( Basic bc )            = execute env bc
-    --execute env ( PipedCommand bc c )   = do
+    -- execute env ( PipedCommand bc c )   = do
+    --     ( val, env' ) <- execute env $ bc { displayOutput = False }
 
 
 -- Execute an expression

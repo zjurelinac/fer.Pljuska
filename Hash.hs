@@ -63,11 +63,11 @@ runTest = do
 runAdditionalTests :: Environment -> IO ()
 runAdditionalTests env = do
     --let lsCmd   = CommandExpr $ Basic $ BasicCommand "ls" [] Nothing Nothing False True
-    let cdCmd   = CommandExpr $ Basic $ BasicCommand "cd" [] Nothing Nothing False True
-    let pwdCmd  = CommandExpr $ Basic $ BasicCommand "pwd" [] Nothing Nothing True False --( Just $ StaticData $ StringValue "pwd.txt" )
+    let cdCmd   = CommandExpr $ Basic $ BasicCommand "cd" [] Nothing Nothing False True False
+    let pwdCmd  = CommandExpr $ Basic $ BasicCommand "pwd" [] Nothing Nothing True False False--( Just $ StaticData $ StringValue "pwd.txt" )
     let a1      = AssignmentExpr $ Assignment ( Variable "x" ) ( DataExpr $ StaticData $ IntValue 1 )
     let a2      = AssignmentExpr $ Assignment ( Variable "x" ) ( ArithmeticExpr $ Arithmetic Modulo ( Value $ VarData $ Variable "x" ) ( Value $ StaticData $ IntValue 3 ) )
-    let echoCmd = CommandExpr $ Basic $ BasicCommand "echo" [ VarData $ Variable "x" ] Nothing Nothing False True
+    let echoCmd = CommandExpr $ Basic $ BasicCommand "echo" [ VarData $ Variable "x" ] Nothing Nothing False True False
     -- let c1      = BasicCondition Lesser ( StaticData $ StringValue "ab" ) ( StaticData $ StringValue "aaa" )
     let bb      = BasicBlock [ cdCmd, a1, echoCmd, a2, echoCmd ]
     -- let ib      = IfBlock c1 bb ( BasicBlock [ VoidExpr ] )

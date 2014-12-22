@@ -37,9 +37,10 @@ blankEnvironment :: IO Environment
 blankEnvironment = do
     fp <- getCurrentDirectory
     return $ Environment {
-        commandList = defaultCommands,
-        currentDirectory = fp,
-        variables = M.empty }
+        commandList         = defaultCommands,
+        currentDirectory    = fp,
+        lastOutput          = NoValue,
+        variables           = M.empty }
 
 
 -- Create a new, blank environment, with a custom directory
