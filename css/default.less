@@ -21,6 +21,7 @@ h1{
     font-size       :   36px;
     line-height     :   48px;
     margin-bottom   :   12px;
+    opacity         :   0.5;
 }
 
 h2{
@@ -43,7 +44,8 @@ em{
 
 
 header.main-header{
-    background      :   @accent;
+    background      :   @accent url( ../img/background.jpg );
+    background-size :   cover;
     color           :   #fff;
     min-height      :   100vh;
     padding-top     :   48px;
@@ -89,7 +91,7 @@ nav.top-nav{
 
 .header-center{
     float           :   left;
-    margin          :   48px 0;
+    margin          :   96px 0;
     width           :   100%;
 
     p{
@@ -112,14 +114,23 @@ nav.top-nav{
     text-align      :   center;
 }
 
-.short-description{
-    .column( 3, 4 );
-    padding         :   48px;
-}
-
 .short-features{
     .column( 2, 4 );
     padding         :   24px 0;
+
+    p{
+        color           :   #f5f5f5;
+        font-size       :   18px;
+        margin          :   24px 0;
+
+        b{
+            color           :   #fff;
+        }
+    }
+}
+
+.reason{
+    opacity         :   0.5;
 }
 
 .source-example{
