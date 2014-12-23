@@ -1,0 +1,150 @@
+@import "reset.css";
+
+@headerFont     :   "Roboto Slab";
+@bodyFont       :   "PT Sans", sans;
+@monoFont       :   "Ubuntu Mono", monospace;
+
+@accent         :   #008e93;
+
+body{
+    font-family     :   @bodyFont;
+    font-size       :   15px;
+    line-height     :   24px;
+}
+
+header, div, section, article, aside, footer, nav, ul, li{
+    box-sizing      :   border-box;
+}
+
+h1{
+    font-family     :   @headerFont;
+    font-size       :   36px;
+    line-height     :   48px;
+    margin-bottom   :   12px;
+}
+
+h2{
+
+}
+
+h5{
+    font-size       :   24px;
+    line-height     :   36px;
+}
+
+b{
+    font-weight     :   700;
+}
+
+em{
+    font-style      :   italic;
+}
+
+
+
+header.main-header{
+    background      :   @accent;
+    color           :   #fff;
+    min-height      :   100vh;
+    padding-top     :   48px;
+    width           :   100%;
+}
+
+.content-wrapper{
+    margin          :   0 auto;
+    width           :   1196px;
+}
+
+.grid-wrapper{
+    .grid();
+}
+
+.project-name{
+    .column( 2, 4 );
+}
+
+.prompt{
+    font-weight     :   700;
+}
+
+nav.top-nav{
+    .column( 2, 4 );
+
+    ul{
+        float           :   right;
+    }
+
+    li{
+        font-size       :   18px;
+        float           :   left;
+        line-height     :   36px;
+        padding         :   0 24px;
+
+        img{
+            display         :   block;
+            float           :   right;
+        }
+    }
+}
+
+.header-center{
+    float           :   left;
+    margin          :   48px 0;
+    width           :   100%;
+
+    p{
+        font-size       :   18px;
+    }
+}
+
+.design-line{
+    overflow        :   hidden;
+    padding-bottom  :   48px;
+}
+
+.lambda{
+    .column( 1, 4 );
+    background      :   rgba( 0, 0, 0, 0.2 );
+    font-family     :   "Courier New";
+    font-size       :   240px;
+    line-height     :   240px;
+    opacity         :   0.4;
+    text-align      :   center;
+}
+
+.short-description{
+    .column( 3, 4 );
+    padding         :   48px;
+}
+
+.short-features{
+    .column( 2, 4 );
+    padding         :   24px 0;
+}
+
+.source-example{
+    .column( 2, 4 );
+
+    img{
+        background      :   #2b2a27;
+        float           :   right;
+        padding         :   16px 8px;
+        padding-right   :   24px;
+    }
+}
+
+
+.clear{
+    &:before, &:after{  content         :   "";
+                        display         :   table; }
+    &:after{            clear           :   both; }
+}
+
+.grid{
+    .clear();
+}
+
+.column( @x, @n ){
+    float           :   left;
+    width           :   100% * @x / @n;
+}
