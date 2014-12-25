@@ -1,5 +1,5 @@
 @import "reset.css";
-@import url( http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|Ubuntu+Mono:700,400 );
+//@import url( http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|Ubuntu+Mono:700,400 );
 
 @headerFont     :   "Roboto Slab";
 @bodyFont       :   "PT Sans", sans;
@@ -7,9 +7,10 @@
 
 @accent         :   #008e93;
 @accent2        :   #89F600;
-@accent3        :   #FF3E42;
+@accent3        :   #F4645F;
 
 body{
+    background      :   #e5e5e5;
     color           :   #333;
     font-family     :   @bodyFont;
     font-size       :   15px;
@@ -21,7 +22,6 @@ header, div, section, article, aside, footer, nav, ul, li{
 }
 
 h1{
-    //font-family     :   @headerFont;
     font-size       :   42px;
     line-height     :   48px;
     margin-bottom   :   12px;
@@ -30,15 +30,28 @@ h1{
 }
 
 h2{
-    font-family     :   @headerFont;
-    font-size       :   32px;
-    line-height     :   36px;
+    //font-family     :   @headerFont;
+    font-size       :   36px;
+    line-height     :   48px;
 }
 
-h5{
-    font-size       :   24px;
-    line-height     :   36px;
-    text-shadow     :   0 1px rgba( 0, 0, 0, 0.5 );
+h3{
+    color           :   #555;
+    font-size       :   32px;
+    line-height     :   48px;
+}
+
+h4{
+    font-size       :   20px;
+    font-weight     :   700;
+    line-height     :   48px;
+}
+
+h6{
+    color           :   #777;
+    font-size       :   18px;
+    line-height     :   24px;
+    margin-top      :   12px;
 }
 
 b{
@@ -80,6 +93,12 @@ header.main-header{
 
 .project-name{
     .column( 2, 4 );
+
+    h5{
+        font-size       :   24px;
+        line-height     :   36px;
+        text-shadow     :   0 1px rgba( 0, 0, 0, 0.5 );
+    }
 }
 
 .prompt{
@@ -106,6 +125,10 @@ nav.top-nav{
             background      :   rgba( 255, 255, 255, 0.1 );
             cursor          :   pointer;
             text-decoration :   none;
+        }
+
+        &.active{
+            background      :   rgba( 255, 255, 255, 0.2 );
         }
     }
 }
@@ -166,6 +189,111 @@ p.reason{
         padding-right   :   24px;
     }
 }
+
+
+/* Other pages */
+
+.top-header{
+    background      :   @accent url( ../img/header.jpg ) no-repeat;
+    background-size :   cover;
+    border-bottom   :   8px solid #0C91C6;
+    color           :   #fff;
+    padding-bottom  :   12px;
+}
+
+.page-header{
+    padding         :   48px 0;
+}
+
+.page-content{
+    background      :   url( ../img/watermark.png ) no-repeat left top;
+    margin          :   0 auto;
+    width           :   1196px;
+}
+
+nav.side{
+    .column( 1, 4 );
+    margin-top      :   180px;
+    padding         :   48px 0;
+
+    h4{
+        color           :   @accent3;
+        line-height     :   36px;
+        margin-bottom   :   12px;
+    }
+
+    h5{
+        color           :   @accent3;
+        font-size       :   18px;
+        font-weight     :   700;
+        line-height     :   24px;
+        margin-left     :   24px;
+    }
+
+    h6{
+        font-size       :   15px;
+        font-weight     :   700;
+        line-height     :   24px;
+        margin-left     :   48px;
+    }
+
+    .l1 > li{
+        margin-bottom   :   12px;
+    }
+}
+
+.center{
+    .column( 3, 4 );
+}
+
+.center-content{
+    background      :   #fafafa;
+    //margin-bottom   :   48px;
+    min-height      :   1200px;
+    padding         :   48px;
+    padding-right   :   96px;
+
+    h3{
+        margin-bottom   :   12px;
+    }
+
+    h3:before{
+        color           :   @accent3;
+        content         :   "\A7";
+        font-weight     :   700;
+        margin-right    :   12px;
+        opacity         :   0.5;
+    }
+
+    h4{
+        color           :   #555;
+        font-size       :   24px;
+        line-height     :   48px;
+    }
+
+    h5{
+        font-size       :   18px;
+        font-weight     :   700;
+        line-height     :   48px;
+    }
+
+    p{
+        font-size       :   17px;
+        line-height     :   24px;
+        margin-bottom   :   24px;
+    }
+}
+
+.content-section{
+    margin-bottom   :   96px;
+}
+
+footer.main-footer{
+    color           :   #aaa;
+    text-align      :   center;
+}
+
+
 
 .clear{
     &:before, &:after{  content         :   "";
