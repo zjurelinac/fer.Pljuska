@@ -4,46 +4,55 @@ import Data.Char
 import Data.List
 import Data.Ord
 
--- import Utility.Data
--- copied from utility.data, will remove later
+import Utility.Data
 
-
-splitOn :: String -> String -> [ String ]
-splitOn delims = reverse . map reverse . foldl splitter []
-    where
-        splitter :: [ String ] -> Char -> [ String ]
-        splitter [] y = if y `elem` delims then [ "" ] else [ [ y ] ]
-        splitter xl@( x : xs ) y
-            | y `elem` delims   = "" : xl
-            | otherwise         = ( y : x ) : xs
-
-
-trimBefore :: String -> String
-trimBefore = dropWhile isSpace
-
-isVarIdentifier :: Char -> Bool
-isVarIdentifier x = isAlphaNum x || x == '_'
-
-isIdentifierStart :: Char -> Bool
-isIdentifierStart x = isAlpha x || x `elem` "/_.-"
-
-isIdentifier :: Char -> Bool
-isIdentifier x = isAlphaNum x || x `elem` "/_:\\.-="
 
 -- Possibly merge minuses with a parameter token
 data Token  = StringToken       String      -- Anything between ""
             | IntToken          Int         -- A numeric constant
             | CommentToken      String      -- Anything after # in a line
             | VariableToken     String      -- A variable identifier, can contain alphanumerics and _
-            | OperatorToken     String      -- One of the allowed operators:    + - * / % < > = >> | == != < > <= >=
             | SymbolToken       String      -- One of the following: (){}[]
+
+        -- Temporary tokens, will be further specified later
+            | OperatorToken     String      -- One of the allowed operators:    + - * / %  < > >> = |  == != < > <= >=  || && !
             | IdentifierToken   String      -- Temporary, will be converted into semantic ones
             | NullToken                     -- Indicates a failed match
 
-            -- Semantic tokens
+        -- Semantic tokens
             | ControlToken      String      -- For a control loop or statement
             | CommandToken      String      -- A potential command call
             | ParameterToken    String      -- Parameters of a command
+
+        -- Specific tokens
+            -- Arithmetic operators
+            | BinaryPlusToken
+            | BinaryMinusToken
+            | UnaryMinusToken
+            | MultiplyToken
+            | DivideToken
+            | ModuloToken
+
+            -- Comparison operators
+            | GreaterToken
+            | LesserToken
+            | EqualToken
+            | NotEqualToken
+            | LesserEqualToken
+            | GreaterEqualToken
+
+            -- Logical operators
+            | NotToken
+            | AndToken
+            | OrToken
+
+            -- Control tokens
+            | AssignToken
+            | PipeToken
+            | InRedirectToken
+            | OutRetirectToken
+            | AppendOutRedirectToken
+
             deriving ( Show )
 
 
@@ -158,7 +167,9 @@ readSymbol ( x : xs )
 
 tokenizeString' :: String -> [ Token ]
 tokenizeString' [] = []
-tokenizeString' xs = tok : tokenizeString' rest
+tokenizeString' xs
+    | length rest < length xs   = tok : tokenizeString' rest
+    | otherwise                 = error "Syntax error - unrecognized input"
     where
         ( tok, rest )   = minimumBy ( comparing ( length . snd ) ) $ map ( applyOn xs' ) tokenizers
         xs'             = trimBefore xs
@@ -189,9 +200,52 @@ contextualizeTokens = reverse . foldl determineToken []
                     ( ParameterToken _ )    -> ParameterToken it : xs
                     _                       -> CommandToken it : xs
 
+            determineToken xs t@( OperatorToken ot )
+                | ot == "+"     = BinaryPlusToken : xs
+                | ot == "*"     = MultiplyToken : xs
+                | ot == "/"     = DivideToken : xs
+                | ot == "%"     = ModuloToken : xs
+                | ot == "-"     = if ( null xs ||
+                                        ( case head xs of
+                                            VariableToken _     -> False
+                                            IntToken _          -> False
+                                            _                   -> True )
+                                    ) then  UnaryMinusToken : xs
+                                    else    BinaryMinusToken : xs
+
+                | ot == "&&"    = AndToken : xs
+                | ot == "||"    = OrToken : xs
+                | ot == "!"     = NotToken : xs
+
+                | ot == "="     = AssignToken : xs
+                | ot == "|"     = PipeToken : xs
+                | ot == ">>"    = AppendOutRedirectToken : xs
+
+                | ot == "<"     = if isLogicContext xs
+                                    then LesserToken : xs
+                                    else InRedirectToken : xs
+                | ot == ">"     = if isLogicContext xs
+                                    then GreaterToken : xs
+                                    else OutRetirectToken : xs
+
+                | ot == ">="    = GreaterEqualToken : xs
+                | ot == "<="    = LesserEqualToken : xs
+                | ot == "=="    = EqualToken : xs
+                | ot == "!="    = NotEqualToken : xs
+
+                | otherwise     = error "Unrecognized operator appeared (Should not happen!)"
+
             determineToken xs t = t : xs
 
-            commandWords = [ "if", "while" ]
+            commandWords = [ "if", "while", "else" ]
+
+            isLogicContext :: [ Token ] -> Bool
+            isLogicContext xs
+                | null xs       = error "Syntax error: wrong usage of < or > operators"
+                | otherwise     = case head xs of
+                    ( CommandToken _ )      -> False
+                    ( ParameterToken _ )    -> False
+                    _                       -> True
 
 
 tokenizeString :: String -> [ Token ]

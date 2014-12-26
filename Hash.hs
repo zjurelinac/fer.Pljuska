@@ -4,12 +4,15 @@ module Hash(
     runTest
 ) where
 
+import Control.Exception
+
 import Language.Core
 import Language.Definitions
 import Language.Commands.Basic
 import Language.Commands.Filesystem
 
 import Interpreter
+import Parsing.Tokenizer
 import Utility.Console
 import Utility.Data
 import Utility.Terminal
@@ -35,10 +38,16 @@ runTest :: IO ()
 runTest = do
     env <- blankEnvironment
     startup env
-    runAdditionalTests env
+    r <- runAdditionalTests env `catches` [ Handler handleUserEx, Handler handleIOEx ]
     putStrLn $ errorString "HASH Ending..."
 
+handleUserEx :: ErrorCall -> IO ()
+handleUserEx e = putStrLn . errorString $ "E: " ++ show e
+
+handleIOEx :: IOException -> IO ()
+handleIOEx e = putStrLn . errorString . show $ e
 
 runAdditionalTests :: Environment -> IO ()
 runAdditionalTests env = do
-    return ()
+    a <- getLine
+    putStrLn . show . tokenizeString $ a
