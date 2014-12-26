@@ -4,7 +4,7 @@ module Hash(
     runTest
 ) where
 
-import Control.Exception
+import Control.Exception hiding ( evaluate )
 
 import Language.Core
 import Language.Definitions
@@ -13,6 +13,7 @@ import Language.Commands.Filesystem
 
 import Interpreter
 import Parsing.Tokenizer
+import Parsing.Parser
 import Utility.Console
 import Utility.Data
 import Utility.Terminal
@@ -39,7 +40,7 @@ runTest = do
     env <- blankEnvironment
     startup env
     r <- runAdditionalTests env `catches` [ Handler handleUserEx, Handler handleIOEx ]
-    putStrLn $ errorString "HASH Ending..."
+    putStrLn ""
 
 handleUserEx :: ErrorCall -> IO ()
 handleUserEx e = putStrLn . errorString $ "E: " ++ show e
@@ -49,5 +50,12 @@ handleIOEx e = putStrLn . errorString . show $ e
 
 runAdditionalTests :: Environment -> IO ()
 runAdditionalTests env = do
-    a <- getLine
-    putStrLn . show . tokenizeString $ a
+    {-a <- getLine
+    putStrLn . show . tokenizeString $ a-}
+    putStrLn ""
+    let ts = [ IntToken 3, BinaryPlusToken, IntToken 4, MultiplyToken, IntToken 2, DivideToken, LeftParens, IntToken 1, BinaryMinusToken, IntToken 5, RightParens ]
+    let cs = convertToRPN ts
+    let ps = parseArithmetic cs
+    print cs
+    print ps
+    print $ evaluate env ps

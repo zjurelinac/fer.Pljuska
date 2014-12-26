@@ -6,8 +6,7 @@ import Data.Ord
 
 import Utility.Data
 
-
--- Possibly merge minuses with a parameter token
+-- /int-int error - absolute paths should be in quotes
 data Token  = StringToken       String      -- Anything between ""
             | IntToken          Int         -- A numeric constant
             | CommentToken      String      -- Anything after # in a line

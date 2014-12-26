@@ -93,7 +93,7 @@ data Comparison     = Equals | NotEqual | Greater | Lesser | GreaterEqual | Less
 
 
 -- Definition of a general binary operator
-data Operator       = Plus | Minus | Multiply | Divide | Modulo | Power | Concat
+data Operator       = Plus | Minus | Multiply | Divide | Modulo | Power | UnaryMinus
                     deriving ( Show )
 
 
@@ -104,6 +104,7 @@ data Assignment     = Assignment Variable Expression
 
 -- Definition of an arithmetic expression
 data Arithmetic     = Arithmetic Operator Arithmetic Arithmetic
+                    | UnaryArithmetic Operator Arithmetic
                     | Value Data
                     deriving ( Show )
 

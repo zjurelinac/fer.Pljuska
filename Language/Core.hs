@@ -60,9 +60,6 @@ instance Num PrimitiveType where
 (%) ( IntValue i ) ( IntValue j )   =   IntValue ( i `rem` j )
 (%) _ _                             =   error "Incompatible types for modulus operation"
 
-(+-+)  :: PrimitiveType -> PrimitiveType -> PrimitiveType
-(+-+) ( StringValue s ) ( StringValue t )   =   StringValue ( s ++ t )
-(+-+) _ _                                   =   error "Incompatible types for concatenation"
 
 
 -- Testing a condition
@@ -93,9 +90,10 @@ instance Evaluable Arithmetic where
             Multiply    -> v1 * v2
             Divide      -> v1 // v2
             Modulo      -> v1 % v2
-            Concat      -> v1 +-+ v2
         where   v1 = evaluate env a1
                 v2 = evaluate env a2
+    evaluate env ( UnaryArithmetic UnaryMinus a ) = negate $ evaluate env a
+
 
 
 -- Execute an assignment

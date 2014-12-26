@@ -1,0 +1,20 @@
+# An example HASH script
+$a = 7
+$b = "a string"
+
+cat file.txt
+ls -al > out.txt
+mkdir New\ dir
+cd New\ dir
+create example.jpg
+hexdump example.jpg
+
+$a = $a*5+(17/2-4)*-1
+
+if [ $a > 0 || $b != "Hello" ]{
+    echo "Alles gut"
+} else {
+    cat fruit.txt | grep apple
+}
+
+echo "Program $0 is completed. Over and out! (some money here \$123)"
