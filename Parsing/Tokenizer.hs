@@ -12,11 +12,11 @@ data Token  = StringToken       String      -- Anything between ""
             | IntToken          Int         -- A numeric constant
             | CommentToken      String      -- Anything after # in a line
             | VariableToken     String      -- A variable identifier, can contain alphanumerics and _
-            | SymbolToken       String      -- One of the following: (){}[]
 
         -- Temporary tokens, will be further specified later
             | OperatorToken     String      -- One of the allowed operators:    + - * / %  < > >> = |  == != < > <= >=  || && !
             | IdentifierToken   String      -- Temporary, will be converted into semantic ones
+            | SymbolToken       String      -- One of the following: (){}[]
             | NullToken                     -- Indicates a failed match
 
         -- Semantic tokens
@@ -53,10 +53,28 @@ data Token  = StringToken       String      -- Anything between ""
             | OutRetirectToken
             | AppendOutRedirectToken
 
+            -- Brackets
+            | LeftParens
+            | RightParens
+
+            | TestStart
+            | TestEnd
+
+            | BlockStart
+            | BlockEnd
+
             deriving ( Show )
 
 
 type Tokenizer = ( String -> ( Token, String ) )
+
+
+tokenDelims :: String
+tokenDelims = " \t\n()[]{}+-*/%"
+
+
+restoreAll :: ( String, String ) -> ( String, String )
+restoreAll ( xs, ys ) = ( "", reverse xs ++ ys )
 
 
 readComment :: Tokenizer
@@ -101,11 +119,12 @@ readInt xs
         readInt' :: ( String, String ) -> ( String, String )
         readInt' a@( ys, [] ) = a                                       -- Input termination
         readInt' a@( [], ( x : xs ) )                                   -- Start reading
-            | isDigit x     = readInt' ( [ x ], xs )
-            | otherwise     = a
+            | x == '-' || isDigit x = readInt' ( [ x ], xs )
+            | otherwise             = a
         readInt' a@( ys, ( x : xs ) )
-            | isDigit x     = readInt' ( x : ys, xs )                   -- Propagation
-            | otherwise     = a                                         -- Termination
+            | isDigit x             = readInt' ( x : ys, xs )           -- Propagation
+            | x `elem` tokenDelims  = a                                 -- Allowed termination
+            | otherwise             = restoreAll a                      -- Matching failure
 
 
 readVar :: Tokenizer
@@ -181,9 +200,9 @@ tokenizeString' xs
         tokenizers = [
             readComment,
             readString,
+            readOperator,
             readInt,
             readVar,
-            readOperator,
             readSymbol,
             readIdentifier ]
 
@@ -198,6 +217,9 @@ contextualizeTokens = reverse . foldl determineToken []
                 | otherwise                 = case ( head xs ) of
                     ( CommandToken _ )      -> ParameterToken it : xs
                     ( ParameterToken _ )    -> ParameterToken it : xs
+                    OutRetirectToken        -> ParameterToken it : xs
+                    InRedirectToken         -> ParameterToken it : xs
+                    AppendOutRedirectToken  -> ParameterToken it : xs
                     _                       -> CommandToken it : xs
 
             determineToken xs t@( OperatorToken ot )
@@ -234,6 +256,14 @@ contextualizeTokens = reverse . foldl determineToken []
                 | ot == "!="    = NotEqualToken : xs
 
                 | otherwise     = error "Unrecognized operator appeared (Should not happen!)"
+
+            determineToken xs t@( SymbolToken st )
+                | st == "("     = LeftParens : xs
+                | st == ")"     = RightParens : xs
+                | st == "["     = TestStart : xs
+                | st == "]"     = TestEnd : xs
+                | st == "{"     = BlockStart : xs
+                | st == "}"     = BlockEnd : xs
 
             determineToken xs t = t : xs
 
