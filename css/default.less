@@ -1,13 +1,20 @@
 @import "reset.css";
-@import url( http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|Ubuntu+Mono:700,400 );
+//@import url( http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic|Ubuntu+Mono:700,400 );
 
 @headerFont     :   "Roboto Slab";
 @bodyFont       :   "PT Sans", sans;
 @monoFont       :   "Ubuntu Mono", monospace;
 
 @accent         :   #008e93;
-@accent2        :   #89F600;
+@accent2        :   #BCD42A;//#89F600;
 @accent3        :   #F4645F;
+
+// code color scheme
+@blue           :   #268BD2;    //
+@green          :   #BCD42A;
+@red            :   #FF5D38;
+@darkgreen      :   #26A6A6;
+
 
 body{
     background      :   #e5e5e5;
@@ -76,6 +83,13 @@ a[ href ]{
 code{
     color           :   #000;
     font-family     :   @monoFont;
+}
+
+sup{
+    font-size       :   0.7em;
+    line-height     :   0;
+    position        :   relative;
+    top             :   -0.5em;
 }
 
 
@@ -325,6 +339,10 @@ nav.side{
         }
     }
 
+    p.caption{
+        font-style      :   italic;
+    }
+
     pre{
         background      :   #333;
         font-size       :   16px;
@@ -334,6 +352,31 @@ nav.side{
 
         code{
             color           :   #fafafa;
+
+            .comment{
+                color           :   #888;
+            }
+
+            .cmd{
+                color           :   @red;
+            }
+
+            .op{
+                color           :   #ccc;
+            }
+
+            .ctrl{
+                color           :   @red;
+                font-weight     :   700;
+            }
+
+            .var{
+                color           :   @darkgreen;
+            }
+
+            .val, .str{
+                color           :   @green;
+            }
         }
     }
 }

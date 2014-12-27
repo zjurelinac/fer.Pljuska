@@ -34,6 +34,7 @@
                         <h4><a href = "#lang-overview">Language overview</a></h4>
                         <ul class = "l1">
                             <li><h5><a href = "#syntax">Syntax</a></h5></li>
+                            <li><h5><a href = "#datatypes">Data types</a></h5></li>
                             <li><h5><a href = "#variables">Variables</a></h5></li>
                             <li><h5><a href = "#arithmetic">Arithmetic</a></h5></li>
                             <li><h5><a href = "#conditions">Conditions</a></h5></li>
@@ -106,28 +107,41 @@
                         so if you've ever used any of them, say Bash or Zsh, you'll
                         find Hash familiar and understandable.</p>
                         <p>The documentation is divided in two parts. <a href = "">The first</a>
-                        deals with basic language syntax and features, while<a href = ""> the
+                        deals with basic language syntax and features, while <a href = "">the
                         second</a> contains a short description and usage examples of every command
                         supported by Hash.</p>
                     </section>
                     <section class = "content-section">
                         <h3>Language overview</h3>
-                        <p>Here is a short overview of Hash language characteristics and features.</p>
+                        <p>Here is a short overview of Hash language characteristics and features.
+                        It's separated into smaller paragraphs, each describing one of the core
+                        elements of the language.</p>
 
                         <h4>Syntax</h4>
-                        <p><b>Hash language</b> consists of a <b>series of statements</b>, which can be either
-                        <em>commands, assignments or control statements</em>. Statements are most often
-                        separated by newlines, though semicolons <code>;</code> can serve the
-                        same purpose.</p>
+                        <p><b>Hash language</b> script consists of a <b>series of statements</b>,
+                        which can be either <em>commands, assignments or control statements</em>.
+                        Statements are most often separated by newlines, though semicolons <code>;</code>
+                        can serve the same purpose.</p>
+                        <p class = "caption">Here is an example of a short script:</p>
+<pre><code><span class = "comment"># For each month, create a directory for notes</span>
+<span class = "cmd">cd</span> <span class = "param">Documents/Bussiness</span>
+<span class = "var">$i</span> <span class = "op">=</span> <span class = "val">1</span>
+<span class = "ctrl">while</span> <span class = "op">[</span> <span class = "var">$i</span> <span class = "op">&lt;=</span> <span class = "val">12</span> <span class = "op">]{</span>
+    <span class = "cmd">mkdir</span> <span class = "str">"month_$i_notes"</span>
+    <span class = "var">$i</span> <span class = "op">=</span> <span class = "var">$i</span> <span class = "op">+</span> <span class = "val">1</span>
+<span class = "op">}</span>
+</code></pre>
 
-                        <h4>Variables</h4>
+                        <h4>Data types</h4>
                         <p>Hash supports two separate data types: integers and strings, whereby
                         string values must be enclosed into double
                         quotes, <code>&quot;like this&quot;</code>. Integer values
                         support all the basic arithmetic operations: <em>addition, subtraction,
                         multiplication, division and modulo</em>, while strings can contain variables
-                        whose values are inserted into it when the string is first used.</p>
+                        whose values are inserted into it when the string is first used. Integer
+                        values are limited to the interval of <code>&lt;-2<sup>31</sup>, 2<sup>31</sup>&mdash;1&gt;</code></p>
 
+                        <h4>Variables</h4>
                         <p>Variables in Hash can be of either string or integer type, but it's
                         type is changeable during program execution. Variables are always
                         identified by preceding a <code>$</code> symbol in front of their name.
@@ -136,27 +150,45 @@
                         <p class = "warning">Beware though,
                         some variable names are reserved for special purposes, like <code>$0</code>
                         which contains the script name, and <code>$1</code>, <code>$2</code>..., where
-                        script arguments are automatically stored.</p>
+                        script arguments are automatically stored. Accidentally overriding their values
+                        could influence the behaviour of other functions.</p>
 
                         <h4>Arithmetic</h4>
-                        <p>Integer data type in Hash supports all basic arithmetic operations: addition
-                        <code>+</code>, subtraction <code>&ndash;</code>, multiplication<code>*</code>,
-                        division <code>/</code> and modulo <code>%</code>.
-                        There is also an unary <code>-</code> operator, which
-                        should be enclosed in parentheses together with the term it applies on,
-                        <b>because otherwise there is a possibility of parse errors</b>.
-                        </p>
+                        <p>Integer data type in Hash supports all basic arithmetic operations: <b>addition</b>
+                        <code>+</code>, <b>subtraction</b> <code>&mdash;</code>, <b>multiplication</b><code>*</code>,
+                        <b>division</b> <code>/</code> and <b>modulo</b> <code>%</code>. Their behaviour is the same
+                        as almost everywhere else: they're all associative, and multiplication, division
+                        and modulo have higher priority than addition and subtraction.
+                        There is also an unary <code>-</code> operator, which behaves as expected.</p>
 
-                        <p><em>Several examples of arithmetic expressions:</em></p>
-<pre><code>$root = ( $a + $n / $a ) / 2
-$year = ( $days - $days / 1460 + $days / 36524 - $days / 146097 ) / 365
+                        <p class = "warning">Unary minus should be enclosed in parentheses together with the term it applies on,
+                        because otherwise there is a possibility of parse errors.</p>
+
+                        <p>You can also use parentheses to group certain terms and override operator
+                        precedence, should you require to do so.</p>
+
+                        <p class = "caption">A few examples of arithmetic expressions:</p>
+<pre><code><span class = "var">$root</span> <span class = "op">= (</span> <span class = "var">$a</span> <span class = "op">+</span> <span class = "var">$n</span> <span class = "op">/</span> <span class = "var">$a</span> <span class = "op">) /</span> <span class = "val">2</span>
+<span class = "var">$year</span> <span class = "op">=</span> ( <span class = "var">$days</span> <span class = "op">-</span> <span class = "var">$days</span> <span class = "op">/</span> <span class = "val">1460</span> <span class = "op">+</span> <span class = "var">$days</span> / <span class = "val">36524</span> <span class = "op">-</span> <span class = "var">$days</span> <span class = "op">/</span> <span class = "val">146097</span> <span class = "op">) /</span> <span class = "val">365</span>
 </code></pre>
 
                         <h4>Conditions</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi vel, earum cupiditate facere corporis aliquam provident harum sapiente error neque, illo, ratione dolorum molestias possimus molestiae. Enim, maiores at voluptates?</p>
+                        <p>Conditions in HASH are created from simple comparisons between values and
+                        variables, such as <code>$a >= 7</code>, which are combined using operators <b>and</b>
+                        <code>&amp;&amp;</code>, <b>or</b> <code>||</code> and <b>not</b> <code>!</code>, together with
+                        parentheses. They're allowed only inside control statements, where their evaluation
+                        to either <code>True</code> or <code>False</code> determines how will the script
+                        execution proceed.</p>
+                        <p class = "caption">An example of a condition inside an if:</p>
+<pre><code><span class = "ctrl">if </span><span class = "op">[ ( </span><span class = "var">$len</span> <span class = "op">&gt;</span><span class = "val"> 0</span><span class = "op"> ) &amp;&amp; ( </span><span class = "var">$shouldOutput</span> <span class = "op">!= </span><span class = "str">"no"</span><span class = "op"> ) ] {</span>
+    <span class = "comment"># Do something accordingly</span>
+<span class = "op">}</span>
+</code></pre>
 
                         <h4>Control statements</h4>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur deleniti consequatur id consectetur unde ullam corrupti, praesentium quaerat dolorem, mollitia, at nihil est optio dolore. Saepe, natus vel delectus eligendi.</p>
+                        <p>Hash supports two types of control statements: <b>if&ndash;else statements</b> and
+                        <b>while loops</b>. Both test a given condition, and based upon it determine
+                        what to do next. </p>
                     </section>
                     <section class = "content-section">
                         <h3>Builtin commands</h3>
@@ -175,7 +207,7 @@ $year = ( $days - $days / 1460 + $days / 36524 - $days / 146097 ) / 365
     </section>
     <footer class = "main-footer">
         <div class = "content-wrapper">
-        <b>Hosted on Github.</b> Copyright &copy; 2014-15
+            <b>Hosted on Github.</b> Copyright &copy; 2014-15
         </div>
     </footer>
 </body>
