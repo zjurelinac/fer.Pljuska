@@ -322,17 +322,19 @@ nav.side{
         code{
             background      :   #f2f2f2;
             border          :   1px solid #ddd;
-            color           :   #444;
+            color           :   darken( @accent3, 5% );
             font-weight     :   700;
             padding         :   2px 4px;
         }
     }
 
     p.warning{
+        background      :   @accent3;
+        color           :   #fff;
         font-style      :   italic;
+        padding         :   12px 24px;
 
         &:before{
-            color           :   @accent3;
             content         :   "Warning: ";
             font-style      :   normal;
             font-weight     :   700;
