@@ -42,20 +42,28 @@ runTest = do
     r <- runAdditionalTests env `catches` [ Handler handleUserEx, Handler handleIOEx ]
     putStrLn ""
 
+
 handleUserEx :: ErrorCall -> IO ()
 handleUserEx e = putStrLn . errorString $ "E: " ++ show e
+
 
 handleIOEx :: IOException -> IO ()
 handleIOEx e = putStrLn . errorString . show $ e
 
+
 runAdditionalTests :: Environment -> IO ()
 runAdditionalTests env = do
-    {-a <- getLine
-    putStrLn . show . tokenizeString $ a-}
-    putStrLn ""
-    let ts = [ IntToken 3, BinaryPlusToken, IntToken 4, MultiplyToken, IntToken 2, DivideToken, LeftParens, IntToken 1, BinaryMinusToken, IntToken 5, RightParens ]
+    a <- getLine
+    let b = tokenizeString a
+    putStrLn . show $ b
+    let c = parseCommand False b
+    putStrLn . show $ c
+    --putStrLn . show . tokenizeString $ a
+    ( r, env ) <- execute env c
+    {-let ts = [ IntToken 3, BinaryPlusToken, IntToken 4, MultiplyToken, IntToken 2, DivideToken, LeftParens, IntToken 1, BinaryMinusToken, IntToken 5, RightParens ]
     let cs = convertToRPN ts
     let ps = parseArithmetic cs
     print cs
     print ps
-    print $ evaluate env ps
+    print $ evaluate env ps-}
+    putStr ""

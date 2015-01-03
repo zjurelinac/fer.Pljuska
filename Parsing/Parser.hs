@@ -4,12 +4,13 @@ import Language.Definitions
 
 import Parsing.Tokenizer
 
+import Utility.Data
 import Utility.Tokens
 
 
 
-parseArithmetic :: [ Token ] -> Arithmetic
-parseArithmetic = head . parseArithmetic' []
+parseArithmetic :: [ Token ] -> Expression
+parseArithmetic = ArithmeticExpr . head . parseArithmetic' []
     where
             parseArithmetic' :: [ Arithmetic ] -> [ Token ] -> [ Arithmetic ]
             parseArithmetic' as [] = as
@@ -49,22 +50,42 @@ convertToRPN = reverse . convertToRPN' [] []
                                                           else [ head ns ]
                                                 ns'     = if null func then ns else tail ns
                                             in convertToRPN' ( func ++ reverse ops' ++ out ) ns' ys
-
                     _                   -> let  pr      = operatorPrecedence y
                                                 ops'    = takeWhile ( shouldPop pr ) ops
                                                 ns      = drop ( length ops' ) ops
                                            in convertToRPN' ( reverse ops' ++ out ) ( y : ns ) ys
-
-            isLeftParens :: Token -> Bool
-            isLeftParens LeftParens = True
-            isLeftParens _          = False
-
-            isUnaryMinus :: Token -> Bool
-            isUnaryMinus UnaryMinusToken    = True
-            isUnaryMinus _                  = False
 
             shouldPop :: Int -> Token -> Bool
             shouldPop i x
                 | isData x || isLeftParens x    = False
                 | otherwise                     = operatorPrecedence x >= i
 
+
+
+parseCommand :: Bool -> [ Token ] -> Command
+parseCommand inpipe xs
+    | null rest     = Basic $ parseBasic toks inpipe False
+    | otherwise     = PipedCommand ( parseBasic toks inpipe True ) ( parseCommand True $ tail rest )
+    where   ( toks, rest ) = break isPipeToken xs
+
+            parseBasic :: [ Token ] -> Bool -> Bool -> BasicCommand
+            parseBasic toks inpipe outpipe = BasicCommand {
+                cmdName         = getCmdName . head $ toks,
+                args            = parseArgs . tail $ toks,
+                inputStream     = instream,
+                outputStream    = outstream,
+                append          = shouldAppend,
+                displayOutput   = not outpipe,
+                pipedInto       = inpipe
+            }
+
+                where
+                        instream        = if length ins > 1 then Just ( convertToData $ ins !! 1 ) else Nothing
+                        outstream       = if length outs > 1 then Just ( convertToData $ outs !! 1 ) else Nothing
+                        shouldAppend    = if null outs then False else isAppend $ head outs
+                        parseArgs       = map convertToData . takeWhile isDataOrParam
+                        outs            = dropWhile ( not . isOutRedirect ) toks
+                        ins             = dropWhile ( not . isInRedirect ) toks
+
+
+--parseCondition :: [ Token ] -> Condition

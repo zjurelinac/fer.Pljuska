@@ -49,7 +49,7 @@ data Token  = StringToken       String      -- Anything between ""
             | AssignToken
             | PipeToken
             | InRedirectToken
-            | OutRetirectToken
+            | OutRedirectToken
             | AppendOutRedirectToken
 
             -- Brackets
@@ -206,6 +206,10 @@ tokenizeString' xs
             readIdentifier ]
 
 
+data ExpressionType = AssignmentT | CommandT | ConditionT
+                    deriving ( Eq, Show )
+
+-- Check for minuses and strings
 contextualizeTokens :: [ Token ] -> [ Token ]
 contextualizeTokens = reverse . foldl determineToken []
     where
@@ -216,7 +220,7 @@ contextualizeTokens = reverse . foldl determineToken []
                 | otherwise                 = case ( head xs ) of
                     ( CommandToken _ )      -> ParameterToken it : xs
                     ( ParameterToken _ )    -> ParameterToken it : xs
-                    OutRetirectToken        -> ParameterToken it : xs
+                    OutRedirectToken        -> ParameterToken it : xs
                     InRedirectToken         -> ParameterToken it : xs
                     AppendOutRedirectToken  -> ParameterToken it : xs
                     _                       -> CommandToken it : xs
@@ -247,7 +251,7 @@ contextualizeTokens = reverse . foldl determineToken []
                                     else InRedirectToken : xs
                 | ot == ">"     = if isLogicContext xs
                                     then GreaterToken : xs
-                                    else OutRetirectToken : xs
+                                    else OutRedirectToken : xs
 
                 | ot == ">="    = GreaterEqualToken : xs
                 | ot == "<="    = LesserEqualToken : xs
