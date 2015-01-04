@@ -68,8 +68,10 @@ wordToHex = printf "%02X"
 isVarIdentifier :: Char -> Bool
 isVarIdentifier x = isAlphaNum x || x == '_'
 
+
 isIdentifierStart :: Char -> Bool
-isIdentifierStart x = isAlpha x || x `elem` "_.-"
+isIdentifierStart x = isAlpha x || x `elem` "_-"
+
 
 isIdentifier :: Char -> Bool
-isIdentifier x = isAlphaNum x || x `elem` "/_:\\.-="
+isIdentifier x = isAlphaNum x || x `elem` "_.-="

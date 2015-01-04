@@ -69,7 +69,7 @@ type Tokenizer = ( String -> ( Token, String ) )
 
 
 tokenDelims :: String
-tokenDelims = " \t\n()[]{}+-*/%"
+tokenDelims = " \t\n()[]{}+-*/%&|"
 
 
 restoreAll :: ( String, String ) -> ( String, String )
@@ -206,79 +206,70 @@ tokenizeString' xs
             readIdentifier ]
 
 
-data ExpressionType = AssignmentT | CommandT | ConditionT
-                    deriving ( Eq, Show )
+data Context = ArithmeticContext | CommandContext | ConditionContext | NoContext
+             deriving ( Eq, Show )
 
 -- Check for minuses and strings
 contextualizeTokens :: [ Token ] -> [ Token ]
-contextualizeTokens = reverse . foldl determineToken []
+contextualizeTokens = reverse . fst . foldl determineToken ( [], NoContext )
     where
-            determineToken :: [ Token ] -> Token -> [ Token ]
-            determineToken xs t@( IdentifierToken it )
-                | it `elem` commandWords    = ControlToken it : xs
-                | null xs                   = CommandToken it : xs
-                | otherwise                 = case ( head xs ) of
-                    ( CommandToken _ )      -> ParameterToken it : xs
-                    ( ParameterToken _ )    -> ParameterToken it : xs
-                    OutRedirectToken        -> ParameterToken it : xs
-                    InRedirectToken         -> ParameterToken it : xs
-                    AppendOutRedirectToken  -> ParameterToken it : xs
-                    _                       -> CommandToken it : xs
+            determineToken :: ( [ Token ], Context ) -> Token -> ( [ Token ], Context )
+            determineToken ( xs, c ) t@( IdentifierToken it )
+                | it `elem` commandWords    = ( ControlToken it : xs, NoContext )
+                | null xs                   = ( CommandToken it : xs, CommandContext )
+                | otherwise                 = case c of
+                                                CommandContext  ->  ( ParameterToken it : xs, c )
+                                                NoContext       ->  ( CommandToken it : xs, CommandContext )
+                                                _               ->  ( ParameterToken ( it ++ show c ) : xs, c )--error "Unknown context"
 
-            determineToken xs t@( OperatorToken ot )
-                | ot == "+"     = BinaryPlusToken : xs
-                | ot == "*"     = MultiplyToken : xs
-                | ot == "/"     = DivideToken : xs
-                | ot == "%"     = ModuloToken : xs
+            determineToken ( xs, c ) t@( OperatorToken ot )
+                | ot == "+"     = ( BinaryPlusToken : xs, ArithmeticContext )
+                | ot == "*"     = ( MultiplyToken : xs, ArithmeticContext )
+                -- bugfix needed
+                | ot == "/"     = ( DivideToken : xs, ArithmeticContext )
+
+                | ot == "%"     = ( ModuloToken : xs, ArithmeticContext )
                 | ot == "-"     = if ( null xs ||
                                         ( case head xs of
                                             VariableToken _     -> False
                                             IntToken _          -> False
                                             _                   -> True )
-                                    ) then  UnaryMinusToken : xs
-                                    else    BinaryMinusToken : xs
+                                    ) then  ( UnaryMinusToken : xs, ArithmeticContext )
+                                    else    ( BinaryMinusToken : xs, ArithmeticContext )
 
-                | ot == "&&"    = AndToken : xs
-                | ot == "||"    = OrToken : xs
-                | ot == "!"     = NotToken : xs
+                | ot == "&&"    = ( AndToken : xs, ConditionContext )
+                | ot == "||"    = ( OrToken : xs, ConditionContext )
+                | ot == "!"     = ( NotToken : xs, ConditionContext )
 
-                | ot == "="     = AssignToken : xs
-                | ot == "|"     = PipeToken : xs
-                | ot == ">>"    = AppendOutRedirectToken : xs
+                | ot == "="     = ( AssignToken : xs, NoContext )
+                | ot == "|"     = ( PipeToken : xs, NoContext )
+                | ot == ">>"    = ( AppendOutRedirectToken : xs, CommandContext )
 
-                | ot == "<"     = if isLogicContext xs
-                                    then LesserToken : xs
-                                    else InRedirectToken : xs
-                | ot == ">"     = if isLogicContext xs
-                                    then GreaterToken : xs
-                                    else OutRedirectToken : xs
 
-                | ot == ">="    = GreaterEqualToken : xs
-                | ot == "<="    = LesserEqualToken : xs
-                | ot == "=="    = EqualToken : xs
-                | ot == "!="    = NotEqualToken : xs
+                | ot == "<"     = case c of
+                                    ConditionContext    ->  ( LesserToken : xs, c )
+                                    _                   ->  ( InRedirectToken : xs, c )
+                | ot == ">"     = case c of
+                                    ConditionContext    ->  ( GreaterToken : xs, c )
+                                    _                   ->  ( OutRedirectToken : xs, c )
+                | ot == ">="    = ( GreaterEqualToken : xs, ConditionContext )
+                | ot == "<="    = ( LesserEqualToken : xs, ConditionContext )
+                | ot == "=="    = ( EqualToken : xs, ConditionContext )
+                | ot == "!="    = ( NotEqualToken : xs, ConditionContext )
 
                 | otherwise     = error "Unrecognized operator appeared (Should not happen!)"
 
-            determineToken xs t@( SymbolToken st )
-                | st == "("     = LeftParens : xs
-                | st == ")"     = RightParens : xs
-                | st == "["     = TestStart : xs
-                | st == "]"     = TestEnd : xs
-                | st == "{"     = BlockStart : xs
-                | st == "}"     = BlockEnd : xs
+            determineToken ( xs, c ) t@( SymbolToken st )
+                | st == "("     = ( LeftParens : xs, c )
+                | st == ")"     = ( RightParens : xs, c )
+                | st == "["     = ( TestStart : xs, ConditionContext )
+                | st == "]"     = ( TestEnd : xs, ConditionContext )
+                | st == "{"     = ( BlockStart : xs, NoContext )
+                | st == "}"     = ( BlockEnd : xs, NoContext )
 
-            determineToken xs t = t : xs
+            determineToken ( xs, c ) t = ( t : xs, c )
 
             commandWords = [ "if", "while", "else" ]
-
-            isLogicContext :: [ Token ] -> Bool
-            isLogicContext xs
-                | null xs       = error "Syntax error: wrong usage of < or > operators"
-                | otherwise     = case head xs of
-                    ( CommandToken _ )      -> False
-                    ( ParameterToken _ )    -> False
-                    _                       -> True
 
 
 tokenizeString :: String -> [ Token ]

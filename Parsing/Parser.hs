@@ -42,6 +42,7 @@ convertToRPN = reverse . convertToRPN' [] []
                 | isData y      = convertToRPN' ( y : out ) ops ys
                 | otherwise     = case y of
                     UnaryMinusToken     -> convertToRPN' out ( y : ops ) ys
+                    NotToken            -> convertToRPN' out ( y : ops ) ys
                     LeftParens          -> convertToRPN' out ( y : ops ) ys
                     RightParens         ->  let ops'    = takeWhile ( not . isLeftParens ) ops
                                                 ns      = drop ( length ops' + 1 ) ops      -- could make an exception, if parentheses mismatched
@@ -88,4 +89,28 @@ parseCommand inpipe xs
                         ins             = dropWhile ( not . isInRedirect ) toks
 
 
---parseCondition :: [ Token ] -> Condition
+data CondBuilder = BasicCond Condition | Combinator Token
+                 deriving ( Show )
+
+
+preprocessCond :: [ Token ] -> [ Token ] -> [ CondBuilder ]
+preprocessCond xs []
+    | null xs           = []
+    | otherwise         = error "Syntax error in condition"
+preprocessCond xs ( y : ys )
+    | isData y          = preprocessCond ( y : xs ) ys
+    | isComparator y    = BasicCond ( BasicCondition ( toComparison y ) ( convertToData $ xs !! 1 ) ( convertToData $ xs !! 0 ) )
+                            : preprocessCond [] ys
+    | otherwise         = ( Combinator y ) : preprocessCond [] ys
+
+
+parseCondition :: [ CondBuilder ] -> Condition
+parseCondition = parseCondition' []
+    where
+            parseCondition' :: [ Condition ] -> [ CondBuilder ] -> Condition
+            parseCondition' xs [] = head xs
+            parseCondition' xs ( y : ys ) = case y of
+                ( BasicCond bc )        ->  parseCondition' ( bc : xs ) ys
+                ( Combinator NotToken ) ->  parseCondition' ( NotCondition ( head xs ) : tail xs ) ys
+                ( Combinator OrToken )  ->  parseCondition' ( OrCondition ( xs !! 1 ) ( xs !! 0 ) : drop 2 xs ) ys
+                ( Combinator AndToken ) ->  parseCondition' ( AndCondition ( xs !! 1 ) ( xs !! 0 ) : drop 2 xs ) ys

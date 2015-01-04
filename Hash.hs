@@ -56,10 +56,14 @@ runAdditionalTests env = do
     a <- getLine
     let b = tokenizeString a
     putStrLn . show $ b
-    let c = parseCommand False b
+    let c = convertToRPN ( tail $ init b )
     putStrLn . show $ c
+    let d = parseCondition $ preprocessCond [] c
+    putStrLn . show $ d
+    --let c = parseCommand False b
+    --putStrLn . show $ c
     --putStrLn . show . tokenizeString $ a
-    ( r, env ) <- execute env c
+    --( r, env ) <- execute env c
     {-let ts = [ IntToken 3, BinaryPlusToken, IntToken 4, MultiplyToken, IntToken 2, DivideToken, LeftParens, IntToken 1, BinaryMinusToken, IntToken 5, RightParens ]
     let cs = convertToRPN ts
     let ps = parseArithmetic cs
