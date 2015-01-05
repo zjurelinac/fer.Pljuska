@@ -53,30 +53,24 @@ handleIOEx e = putStrLn . errorString . show $ e
 
 runAdditionalTests :: Environment -> IO ()
 runAdditionalTests env = do
-    -- let s = "10 - 2*(-1) - 3*7/11"
-    -- let t = tokenizeInput s
-    -- putStrLn . show $ t
-    -- let a = parseArithmetic t
-    -- putStrLn . show $ a
-    -- let r = evaluate env ( fst a )
-    -- print r
-    --let toks = [ VariableToken "a", AssignToken, CommandToken "ls", EndToken, CommandToken "cd", ParameterToken "folder", EndToken ]
+    -- let toks = [ BlockStart,
+    --              ControlToken "if", TestStart, VariableToken "a", EqualToken, IntToken 1, TestEnd,
+    --              BlockStart, EndToken,
+    --              CommandToken "ls", ParameterToken "-la", EndToken,
+    --              BlockEnd, ControlToken "else", BlockStart, EndToken,
+    --              CommandToken "pwd", EndToken,
+    --              BlockEnd, EndToken,
+    --              CommandToken "ls", EndToken,
+    --              VariableToken "a", AssignToken, IntToken 1, BinaryPlusToken, VariableToken "a", EndToken,
+    --              BlockEnd, EndToken ]
     let toks = [ BlockStart,
-                 ControlToken "if", TestStart, VariableToken "a", EqualToken, IntToken 1, TestEnd,
-                 BlockStart, EndToken,
-                 CommandToken "ls", ParameterToken "-la", EndToken,
-                 BlockEnd, ControlToken "else", BlockStart, EndToken,
-                 CommandToken "pwd", EndToken,
+                 VariableToken "a", AssignToken, IntToken 1, EndToken,
+                 ControlToken "while", TestStart, VariableToken "a", LesserEqualToken, IntToken 4, TestEnd, BlockStart, EndToken,
+                 CommandToken "echo", VariableToken "a", EndToken,
+                 VariableToken "a", AssignToken, VariableToken "a", BinaryPlusToken, IntToken 1, EndToken,
                  BlockEnd, EndToken,
-                 CommandToken "ls", EndToken,
                  BlockEnd, EndToken ]
-    --let ( cond, rest )  = parseCondition $ tail toks
-    --let r2@( b1, rest1 )   = parseBasicBlock rest
-    --putStrLn . show $ r2
-    --let ts' = drop 1 $ take 6 toks
-    --putStrLn . show $ ts'
-    --let c = parseCondition ts'
-    --putStrLn . show $ c
     let a = parseBasicBlock toks
     print a
+    (x, y ) <- execute env ( fst a )
     putStr ""

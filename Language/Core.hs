@@ -146,7 +146,8 @@ instance Executable Block where
         | otherwise         =   execute env b2
 
     execute env wb@( WhileBlock cond bs )
-         | test env cond     =   execute env bs >>= ( flip execute wb . snd )
+         | test env cond    =   execute env bs >>= ( flip execute wb . snd )
+         | otherwise        =   return $ ( NoValue, env )
 
 
 -- Preprocess function arguments

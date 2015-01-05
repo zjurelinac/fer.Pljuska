@@ -185,7 +185,13 @@ parseIfBlock ( ControlToken ct : toks )
 parseIfBlock _      = error "Not an if block"
 
 parseWhileBlock :: Parser
-parseWhileBlock toks = ( VoidExpr, toks )
+parseWhileBlock ( ControlToken ct : toks )
+    | ct == "while"     = ( BlockExpr $ WhileBlock cond b, rest1 )
+    | otherwise         = error "Not a while block"
+        where
+                ( cond, rest )  = parseCondition toks
+                ( b, rest1 )    = parseBasicBlock rest
+parseWhileBlock _       = error "Not a while block"
 
 
 parseBasicBlock :: Parser

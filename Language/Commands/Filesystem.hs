@@ -10,6 +10,7 @@ module Language.Commands.Filesystem (
 
 import Data.List
 import System.Directory
+import System.Path
 
 import Language.Definitions
 import Utility.Data
