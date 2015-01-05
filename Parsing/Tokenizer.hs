@@ -62,7 +62,10 @@ data Token  = StringToken       String      -- Anything between ""
             | BlockStart
             | BlockEnd
 
-            deriving ( Show )
+            -- Statement end token
+            | EndToken
+
+            deriving ( Eq, Show )
 
 
 type Tokenizer = ( String -> ( Token, String ) )
@@ -118,7 +121,7 @@ readInt xs
         readInt' :: ( String, String ) -> ( String, String )
         readInt' a@( ys, [] ) = a                                       -- Input termination
         readInt' a@( [], ( x : xs ) )                                   -- Start reading
-            | x == '-' || isDigit x = readInt' ( [ x ], xs )
+            | isDigit x             = readInt' ( [ x ], xs )
             | otherwise             = a
         readInt' a@( ys, ( x : xs ) )
             | isDigit x             = readInt' ( x : ys, xs )           -- Propagation
@@ -156,8 +159,8 @@ readIdentifier xs
             | isIdentifierStart x   = readIdentifier' ( [ x ], xs )
             | otherwise             = a
         readIdentifier' a@( yl@( y : ys ), ( x : xs ) )
-            | ( x == ' ' && y == '\\' )
-                || isIdentifier x   = readIdentifier' ( ( x : yl ), xs )-- Propagation - allow space escaping
+            | yl == "-" && isDigit x= restoreAll a
+            | isIdentifier x        = readIdentifier' ( ( x : yl ), xs )-- Propagation - allow space escaping
             | otherwise             = a                                 -- Termination
 
 
@@ -220,7 +223,7 @@ contextualizeTokens = reverse . fst . foldl determineToken ( [], NoContext )
                 | otherwise                 = case c of
                                                 CommandContext  ->  ( ParameterToken it : xs, c )
                                                 NoContext       ->  ( CommandToken it : xs, CommandContext )
-                                                _               ->  ( ParameterToken ( it ++ show c ) : xs, c )--error "Unknown context"
+                                                _               ->  error "Unknown context"
 
             determineToken ( xs, c ) t@( OperatorToken ot )
                 | ot == "+"     = ( BinaryPlusToken : xs, ArithmeticContext )
@@ -233,6 +236,7 @@ contextualizeTokens = reverse . fst . foldl determineToken ( [], NoContext )
                                         ( case head xs of
                                             VariableToken _     -> False
                                             IntToken _          -> False
+                                            RightParens         -> False
                                             _                   -> True )
                                     ) then  ( UnaryMinusToken : xs, ArithmeticContext )
                                     else    ( BinaryMinusToken : xs, ArithmeticContext )
@@ -273,4 +277,13 @@ contextualizeTokens = reverse . fst . foldl determineToken ( [], NoContext )
 
 
 tokenizeString :: String -> [ Token ]
-tokenizeString = contextualizeTokens . tokenizeString'
+tokenizeString = filter ( not . isComment ) . contextualizeTokens . tokenizeString'
+
+
+tokenizeInput :: String -> [ Token ]
+tokenizeInput = flip (++) [ EndToken ] . intercalate [ EndToken ] . filter ( not . null ) . map tokenizeString . splitOn "\n;"
+
+
+isComment :: Token -> Bool
+isComment ( CommentToken _ )    = True
+isComment _                     = False

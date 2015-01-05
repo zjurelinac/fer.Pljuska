@@ -9,9 +9,13 @@ import Utility.Tokens
 
 
 
-parseArithmetic :: [ Token ] -> Expression
-parseArithmetic = ArithmeticExpr . head . parseArithmetic' []
+type Parser = ( [ Token ] -> ( Expression, [ Token ] ) )
+
+
+parseArithmetic :: Parser
+parseArithmetic toks = ( ArithmeticExpr $ head $ parseArithmetic' [] $ convertToRPN ts, tail rest )
     where
+            ( ts, rest ) = break isEnd toks
             parseArithmetic' :: [ Arithmetic ] -> [ Token ] -> [ Arithmetic ]
             parseArithmetic' as [] = as
             parseArithmetic' as ( tok : ts ) = parseArithmetic'
@@ -63,10 +67,22 @@ convertToRPN = reverse . convertToRPN' [] []
 
 
 
-parseCommand :: Bool -> [ Token ] -> Command
-parseCommand inpipe xs
+
+
+
+
+
+
+parseCommand :: Parser
+parseCommand toks = ( CommandExpr $ parseCommand' False ts, tail rest )
+    where
+            ( ts, rest ) = break isEnd toks
+
+
+parseCommand' :: Bool -> [ Token ] -> Command
+parseCommand' inpipe xs
     | null rest     = Basic $ parseBasic toks inpipe False
-    | otherwise     = PipedCommand ( parseBasic toks inpipe True ) ( parseCommand True $ tail rest )
+    | otherwise     = PipedCommand ( parseBasic toks inpipe True ) ( parseCommand' True $ tail rest )
     where   ( toks, rest ) = break isPipeToken xs
 
             parseBasic :: [ Token ] -> Bool -> Bool -> BasicCommand
@@ -89,6 +105,11 @@ parseCommand inpipe xs
                         ins             = dropWhile ( not . isInRedirect ) toks
 
 
+
+
+
+
+
 data CondBuilder = BasicCond Condition | Combinator Token
                  deriving ( Show )
 
@@ -104,13 +125,81 @@ preprocessCond xs ( y : ys )
     | otherwise         = ( Combinator y ) : preprocessCond [] ys
 
 
-parseCondition :: [ CondBuilder ] -> Condition
-parseCondition = parseCondition' []
+parseCondition' :: [ CondBuilder ] -> Condition
+parseCondition' = parseCondition'' []
     where
-            parseCondition' :: [ Condition ] -> [ CondBuilder ] -> Condition
-            parseCondition' xs [] = head xs
-            parseCondition' xs ( y : ys ) = case y of
-                ( BasicCond bc )        ->  parseCondition' ( bc : xs ) ys
-                ( Combinator NotToken ) ->  parseCondition' ( NotCondition ( head xs ) : tail xs ) ys
-                ( Combinator OrToken )  ->  parseCondition' ( OrCondition ( xs !! 1 ) ( xs !! 0 ) : drop 2 xs ) ys
-                ( Combinator AndToken ) ->  parseCondition' ( AndCondition ( xs !! 1 ) ( xs !! 0 ) : drop 2 xs ) ys
+            parseCondition'' :: [ Condition ] -> [ CondBuilder ] -> Condition
+            parseCondition'' xs [] = head xs
+            parseCondition'' xs ( y : ys ) = case y of
+                ( BasicCond bc )        ->  parseCondition'' ( bc : xs ) ys
+                ( Combinator NotToken ) ->  parseCondition'' ( NotCondition ( head xs ) : tail xs ) ys
+                ( Combinator OrToken )  ->  parseCondition'' ( OrCondition ( xs !! 1 ) ( xs !! 0 ) : drop 2 xs ) ys
+                ( Combinator AndToken ) ->  parseCondition'' ( AndCondition ( xs !! 1 ) ( xs !! 0 ) : drop 2 xs ) ys
+
+
+parseCondition :: ( [ Token ] -> ( Condition, [ Token ] ) )
+parseCondition ( TestStart : toks ) = ( parseCondition' . preprocessCond [] . convertToRPN $ ts, tail rest )
+    where ( ts, rest ) = break isTestEnd toks
+parseCondition _    = error "Not a condition"
+    -- | head toks == TestStart    = ( parseCondition' . preprocessCond [] . convertToRPN $ toks, tail rest )
+    -- | otherwise                 = error "Not a condition!"
+    --where ( ts, rest ) = break isTestEnd . tail $ toks
+
+
+
+
+
+
+parseAssignment :: Parser
+parseAssignment ( VariableToken v : AssignToken : toks )    = ( AssignmentExpr $ Assignment ( Variable v ) expr, tail rest )
+    where
+            ( ts, rest )    = break isEnd toks
+            expr            = case head ts of
+                ( CommandToken _ )  ->  fst . parseCommand $ ts
+                _                   ->  fst . parseArithmetic $ ts
+parseAssignment _                                           = error "Syntax error: invalid assignment"
+
+
+parseExpression :: Parser
+parseExpression toks = case head toks of
+    ( VariableToken _ )     -> parseAssignment toks
+    ( CommandToken _ )      -> parseCommand toks
+    ( ControlToken v )      -> case v of
+                        "if"    ->  parseIfBlock toks
+                        "while" ->  parseWhileBlock toks
+    EndToken                -> ( VoidExpr, tail toks )
+    _                       -> error "Invalid expression"
+
+
+
+parseIfBlock :: Parser
+parseIfBlock ( ControlToken ct : toks )
+    | ct == "if"    = ( BlockExpr $ IfBlock cond b1 b2, rest2 )
+    | otherwise     = error "Not an if block"
+        where
+                ( cond, rest )  = parseCondition toks
+                ( b1, rest1 )   = parseBasicBlock rest
+                ( b2, rest2 )   = if ( not $ null rest1 ) && head rest1 == ( ControlToken "else" )
+                                then parseBasicBlock ( tail rest1 )
+                                else ( BlockExpr $ BasicBlock [ VoidExpr ], rest1 )
+parseIfBlock _      = error "Not an if block"
+
+parseWhileBlock :: Parser
+parseWhileBlock toks = ( VoidExpr, toks )
+
+
+parseBasicBlock :: Parser
+parseBasicBlock ( BlockStart : toks ) = ( BlockExpr $ BasicBlock exprs, rest' )
+    where
+            ( exprs, rest ) = parseBBlock toks
+            rest'           = if null rest || head rest /= EndToken then rest else tail rest
+parseBasicBlock _ = error "Not a block"
+
+
+parseBBlock :: [ Token ] -> ( [ Expression ], [ Token ] )
+parseBBlock ( BlockEnd : ts ) = ( [], ts )
+parseBBlock ts = ( expr : next, rest' )
+    where
+            ( expr, rest )  = parseExpression ts
+            ( next, rest' ) = parseBBlock rest
+

@@ -70,7 +70,10 @@ data BasicCommand   = BasicCommand {
                         append          :: Bool,
                         displayOutput   :: Bool,
                         pipedInto       :: Bool
-                    } deriving ( Show )
+                    } --deriving ( Show )
+
+instance Show BasicCommand where
+    show bc = "`" ++ cmdName bc ++ "`: " ++ show ( args bc )
 
 
 -- Command definition that allows chaining
@@ -120,7 +123,7 @@ data Expression     = AssignmentExpr    Assignment      -- Assigns the result of
 
 
 -- Definition of a execution block
-data Block          = BasicBlock [ Expression ]             -- A thread of commands meant to be executed sequentially
-                    | IfBlock Condition Block Block         -- If block, depending on the condition, execute either the first or the second block
-                    | WhileBlock Condition Block            -- Execute block while condition evaluates to True
+data Block          = BasicBlock [ Expression ]                 -- A thread of commands meant to be executed sequentially
+                    | IfBlock Condition Expression Expression   -- If block, depending on the condition, execute either the first or the second block
+                    | WhileBlock Condition Expression           -- Execute block while condition evaluates to True
                     deriving ( Show )

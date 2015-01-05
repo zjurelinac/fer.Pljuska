@@ -5,11 +5,13 @@ module Utility.Tokens (
     isComparator,
     isData,
     isDataOrParam,
+    isEnd,
     isInRedirect,
     isLeftParens,
     isOutRedirect,
     isParens,
     isPipeToken,
+    isTestEnd,
     isUnaryMinus,
     operatorPrecedence,
     toComparison
@@ -36,6 +38,16 @@ isData _                    = False
 isDataOrParam :: Token -> Bool
 isDataOrParam ( ParameterToken _ )  = True
 isDataOrParam x                     = isData x
+
+
+isEnd :: Token -> Bool
+isEnd EndToken  = True
+isEnd _         = False
+
+
+isTestEnd :: Token -> Bool
+isTestEnd TestEnd   = True
+isTestEnd _         = False
 
 
 isLeftParens :: Token -> Bool
@@ -104,6 +116,8 @@ operatorPrecedence GreaterEqualToken    =   10
 operatorPrecedence NotToken             =   8
 operatorPrecedence AndToken             =   6
 operatorPrecedence OrToken              =   5
+
+operatorPrecedence x                    =   error ( "Unknown operator " ++ show x )
 
 
 convertToData :: Token -> Data
