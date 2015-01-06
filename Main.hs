@@ -1,7 +1,13 @@
-import Hash;
---import Testing.Parse
-import Language.Definitions
+import Hash
+
+import System.Environment
 
 
---main :: IO ()
-main = runTest
+main :: IO ()
+main = do
+    as <- getArgs
+    if null as
+        then runInteractive
+        else runScript $ head as
+
+

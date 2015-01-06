@@ -1,6 +1,7 @@
 module Language.Commands.Filesystem (
     createCommand,
     cpCommand,
+    cpdirCommand,
     mkdirCommand,
     mvCommand,
     mvdirCommand,
@@ -15,6 +16,7 @@ import System.Path
 import Language.Definitions
 import Utility.Data
 import Utility.File
+
 
 mvCommand :: CommandFunction
 mvCommand env args
@@ -61,15 +63,15 @@ mvdirCommand env args
         return ( NoValue, env )
 
 
--- cpdirCommand :: CommandFunction
--- cpdirCommand env args
---     | length args == 2  = do
---         copyDirectory ( toString $ head args ) ( toString $ last args )
---         return ( defaultReturn, env )
---     | otherwise         = do
---         let dest = directorize . toString $ last args
---         mapM_ ( \x -> copyDirectory x ( dest ++ x ) ) $ map toString $ init args
---         return ( defaultReturn, env )
+cpdirCommand :: CommandFunction
+cpdirCommand env args
+    | length args == 2  = do
+        copyDir ( toString $ head args ) ( toString $ last args )
+        return ( NoValue, env )
+    | otherwise         = do
+        let dest = directorize . toString $ last args
+        mapM_ ( \x -> copyDir x ( dest ++ x ) ) $ map toString $ init args
+        return ( NoValue, env )
 
 
 mkdirCommand :: CommandFunction

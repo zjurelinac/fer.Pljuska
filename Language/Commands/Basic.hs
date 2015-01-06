@@ -2,18 +2,23 @@ module Language.Commands.Basic (
     catCommand,
     cdCommand,
     echoCommand,
+    exitCommand,
     hexdumpCommand,
     lsCommand,
+    panicCommand,
     pwdCommand
 ) where
 
 import Data.List
 import qualified Data.ByteString.Lazy as BL
 import System.Directory
+import System.Exit
+import System.Path
 
 import Language.Definitions
 import Utility.Data
 import Utility.File
+import Utility.Terminal
 
 
 catCommand :: CommandFunction
@@ -39,6 +44,10 @@ echoCommand :: CommandFunction
 echoCommand env args = return ( StringValue $ concatMap toString args, env )
 
 
+exitCommand :: CommandFunction
+exitCommand env args = exitSuccess
+
+
 hexdumpCommand :: CommandFunction
 hexdumpCommand env args = do
     x <- BL.readFile $ toString $ head args
@@ -52,8 +61,29 @@ lsCommand env args = do
                 toString $ head args
             else
                 currentDirectory env
-    fs <- getDirectoryContents f
-    return $ ( StringValue $ intercalate "\n" ( sort fs ), env )
+    d <- createDir f
+    let fs = files d
+    let ds = subDirs d
+    return ( StringValue $ (
+        folderStylize ( intercalate "\n" ( sort $ map getBaseName ds ) )
+        ++ ( if null ds then "" else "\n" ) ++
+        ( intercalate "\n" $ sort $ map getBaseName fs ) ), env )
+
+    where folderStylize = styledString ( Style Blue Normal )
+
+
+-- add some styling
+panicCommand :: CommandFunction
+panicCommand env args
+-- A basic list of all commands
+    | null args     = do
+        h <- readFile "Data/Help/main.txt"
+        return ( StringValue h, env )
+-- Help for a particular command
+    | otherwise     = do
+        let a = args !! 0
+        h <- readFile $ "Data/Help/" ++ toString a ++ ".txt"
+        return ( StringValue h, env )
 
 
 pwdCommand :: CommandFunction

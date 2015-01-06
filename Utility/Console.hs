@@ -1,4 +1,5 @@
 module Utility.Console (
+    displayDivider,
     displayPrompt,
     displayStartScreen,
     setTermTitle
@@ -19,7 +20,7 @@ introMessage = "Welcome to Pljuska, a Hash scripting language interpreter,\nwrit
 
 
 helpMessage :: String
-helpMessage = "For help and a list of commands, type 'help'.\n"
+helpMessage = "For help and a list of commands, type `panic`.\n"
 
 
 displayStartScreen :: IO ()
@@ -35,3 +36,7 @@ displayPrompt env = do
 
 setTermTitle :: IO ()
 setTermTitle = Term.setTitle "Pljuska v1.0.0"
+
+
+displayDivider :: IO ()
+displayDivider = putStrLn ( replicate 80 '=' )

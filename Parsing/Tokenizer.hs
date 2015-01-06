@@ -1,4 +1,7 @@
-module Parsing.Tokenizer where
+module Parsing.Tokenizer(
+    Token (..),
+    tokenizeInput
+) where
 
 import Data.Char
 import Data.List
@@ -280,8 +283,12 @@ tokenizeString :: String -> [ Token ]
 tokenizeString = filter ( not . isComment ) . contextualizeTokens . tokenizeString'
 
 
+tokenizeInput' :: String -> [ Token ]
+tokenizeInput' = flip (++) [ EndToken ] . intercalate [ EndToken ] . filter ( not . null ) . map tokenizeString . splitOn "\n;"
+
+
 tokenizeInput :: String -> [ Token ]
-tokenizeInput = flip (++) [ EndToken ] . intercalate [ EndToken ] . filter ( not . null ) . map tokenizeString . splitOn "\n;"
+tokenizeInput xs = BlockStart : ( tokenizeInput' xs ) ++ [ BlockEnd, EndToken ]
 
 
 isComment :: Token -> Bool

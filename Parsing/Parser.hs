@@ -1,4 +1,6 @@
-module Parsing.Parser where
+module Parsing.Parser(
+    parseInput
+) where
 
 import Language.Definitions
 
@@ -6,7 +8,6 @@ import Parsing.Tokenizer
 
 import Utility.Data
 import Utility.Tokens
-
 
 
 type Parser = ( [ Token ] -> ( Expression, [ Token ] ) )
@@ -21,6 +22,7 @@ parseArithmetic toks = ( ArithmeticExpr $ head $ parseArithmetic' [] $ convertTo
             parseArithmetic' as ( tok : ts ) = parseArithmetic'
                 ( case tok of
                     IntToken it         -> ( Value . StaticData . IntValue $ it ) : as
+                    StringToken st      -> ( Value . StaticData . StringValue $ st ) : as
                     VariableToken vt    -> ( Value . VarData . Variable $ vt ) : as
                     UnaryMinusToken     -> ( UnaryArithmetic UnaryMinus ( head as ) ) : ( tail as )
                     BinaryPlusToken     -> ( Arithmetic Plus ( as !! 1 ) ( as !! 0 ) ) : ( drop 2 as )
@@ -28,9 +30,8 @@ parseArithmetic toks = ( ArithmeticExpr $ head $ parseArithmetic' [] $ convertTo
                     MultiplyToken       -> ( Arithmetic Multiply ( as !! 1 ) ( as !! 0 ) ) : ( drop 2 as )
                     DivideToken         -> ( Arithmetic Divide ( as !! 1 ) ( as !! 0 ) ) : ( drop 2 as )
                     ModuloToken         -> ( Arithmetic Modulo ( as !! 1 ) ( as !! 0 ) ) : ( drop 2 as )
-                    _                   -> error "Unrecognized token"
+                    t                   -> error $ "Unrecognized token: " ++ show t
                 ) ts
-
 
 
 -- Potential error, check reversing operators -- EXTENSIVE TESTING REQUIRED
@@ -66,13 +67,6 @@ convertToRPN = reverse . convertToRPN' [] []
                 | otherwise                     = operatorPrecedence x >= i
 
 
-
-
-
-
-
-
-
 parseCommand :: Parser
 parseCommand toks = ( CommandExpr $ parseCommand' False ts, tail rest )
     where
@@ -103,11 +97,6 @@ parseCommand' inpipe xs
                         parseArgs       = map convertToData . takeWhile isDataOrParam
                         outs            = dropWhile ( not . isOutRedirect ) toks
                         ins             = dropWhile ( not . isInRedirect ) toks
-
-
-
-
-
 
 
 data CondBuilder = BasicCond Condition | Combinator Token
@@ -141,13 +130,6 @@ parseCondition :: ( [ Token ] -> ( Condition, [ Token ] ) )
 parseCondition ( TestStart : toks ) = ( parseCondition' . preprocessCond [] . convertToRPN $ ts, tail rest )
     where ( ts, rest ) = break isTestEnd toks
 parseCondition _    = error "Not a condition"
-    -- | head toks == TestStart    = ( parseCondition' . preprocessCond [] . convertToRPN $ toks, tail rest )
-    -- | otherwise                 = error "Not a condition!"
-    --where ( ts, rest ) = break isTestEnd . tail $ toks
-
-
-
-
 
 
 parseAssignment :: Parser
@@ -209,3 +191,6 @@ parseBBlock ts = ( expr : next, rest' )
             ( expr, rest )  = parseExpression ts
             ( next, rest' ) = parseBBlock rest
 
+
+parseInput :: String -> Expression
+parseInput = fst . parseBasicBlock . tokenizeInput

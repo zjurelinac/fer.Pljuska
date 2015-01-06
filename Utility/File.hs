@@ -8,6 +8,8 @@ module Utility.File (
 getAbsolutePath :: FilePath -> FilePath -> FilePath
 getAbsolutePath curr fp
     | head fp == '/'    = fp
+    | fp == ".."        = reverse . tail . drop ( length . getBaseName $ curr ) . reverse $ curr
+    | fp == "."         = curr
     | otherwise         = directorize curr ++ fp
 
 

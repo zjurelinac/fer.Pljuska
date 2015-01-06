@@ -70,7 +70,7 @@ isVarIdentifier x = isAlphaNum x || x == '_'
 
 
 isIdentifierStart :: Char -> Bool
-isIdentifierStart x = isAlpha x || x `elem` "_-"
+isIdentifierStart x = isAlpha x || x `elem` "_-."
 
 
 isIdentifier :: Char -> Bool

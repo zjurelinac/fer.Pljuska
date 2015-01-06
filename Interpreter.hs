@@ -16,18 +16,21 @@ defaultCommands = M.fromList [
                 ( "cat",        catCommand      ),
                 ( "cd",         cdCommand       ),
                 ( "cp",         cpCommand       ),
-                --( "cpdir",      cpdirCommand    ),
+                ( "cpdir",      cpdirCommand    ),
                 ( "create",     createCommand   ),
                 ( "dir",        lsCommand       ),
                 ( "echo",       echoCommand     ),
+                ( "exit",       exitCommand     ),
                 ( "hexdump",    hexdumpCommand  ),
                 ( "ls",         lsCommand       ),
                 ( "mkdir",      mkdirCommand    ),
                 ( "mv",         mvCommand       ),
                 ( "mvdir",      mvdirCommand    ),
+                ( "panic",      panicCommand    ),
                 ( "pwd",        pwdCommand      ),
                 ( "rm",         rmCommand       ),
-                ( "rmdir",      rmdirCommand    )
+                ( "rmdir",      rmdirCommand    ),
+                ( "quit",       exitCommand     )
             ]
 
 

@@ -168,8 +168,16 @@ preprocessArgs env cmd = do
 -- Output the results of a command execution to a proper place ( stdout, file or nowhere )
 outputResults :: Environment -> String -> Bool -> Maybe Data -> Bool -> IO ()
 outputResults _ _ False _ _           = return ()
+outputResults _ [] _ _ _              = return ()
 outputResults _ s _ Nothing _         = putStrLn s
 outputResults env s o ( Just d ) a    = do
     let fn = toString $ evaluate env d
     if a then appendFile fn ( s ++ "\n" )
          else writeFile fn ( s ++ "\n" )
+
+
+-- Run a block expression - used in main program
+runBlock :: Environment -> Expression -> IO Environment
+runBlock env b = do
+    ( _, env' ) <- execute env b
+    return env'

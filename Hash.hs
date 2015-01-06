@@ -1,10 +1,12 @@
 module Hash(
     runInteractive,
-    runScript,
-    runTest
+    runScript
+    --runTest
 ) where
 
 import Control.Exception hiding ( evaluate )
+import Control.Monad
+import System.Exit
 
 import Language.Core
 import Language.Definitions
@@ -19,58 +21,51 @@ import Utility.Data
 import Utility.Terminal
 
 runInteractive :: IO ()
-runInteractive = print "Hash interactive"
+runInteractive = do
+    env <- blankEnvironment
+    startup env
+    runOnce env
+    return ()
+
+runOnce :: Environment -> IO ()
+runOnce env = do
+    displayPrompt env
+    l <- getLine
+    let c = parseInput l
+    tenv <- try ( runBlock env c ) :: IO ( Either SomeException Environment )
+    case tenv of
+        Left e      -> procError e >> runOnce env
+        Right env'  -> runOnce env'
+    return ()
 
 
 runScript :: FilePath -> IO ()
 runScript fp = do
-    file <- readFile fp
-    print file
+    env <- blankEnvironment
+    runScript' fp env
+    return ()
+
+
+runScript' :: FilePath -> Environment -> IO ()
+runScript' fp env = do
+    s <- readFile fp
+    let c = parseInput s
+    _ <- execute env c
+    return ()
 
 
 startup :: Environment -> IO ()
 startup env = do
     setTermTitle
     displayStartScreen
-    displayPrompt env
+    displayDivider
+    return ()
 
 
-runTest :: IO ()
-runTest = do
-    env <- blankEnvironment
-    startup env
-    r <- runAdditionalTests env `catches` [ Handler handleUserEx, Handler handleIOEx ]
-    putStrLn ""
+procError :: SomeException -> IO ()
+procError e = do
+    if show e == "ExitSuccess"
+        then exitSuccess
+        else putStrLn . errorString $ show e
+    return ()
 
-
-handleUserEx :: ErrorCall -> IO ()
-handleUserEx e = putStrLn . errorString $ "E: " ++ show e
-
-
-handleIOEx :: IOException -> IO ()
-handleIOEx e = putStrLn . errorString . show $ e
-
-
-runAdditionalTests :: Environment -> IO ()
-runAdditionalTests env = do
-    -- let toks = [ BlockStart,
-    --              ControlToken "if", TestStart, VariableToken "a", EqualToken, IntToken 1, TestEnd,
-    --              BlockStart, EndToken,
-    --              CommandToken "ls", ParameterToken "-la", EndToken,
-    --              BlockEnd, ControlToken "else", BlockStart, EndToken,
-    --              CommandToken "pwd", EndToken,
-    --              BlockEnd, EndToken,
-    --              CommandToken "ls", EndToken,
-    --              VariableToken "a", AssignToken, IntToken 1, BinaryPlusToken, VariableToken "a", EndToken,
-    --              BlockEnd, EndToken ]
-    let toks = [ BlockStart,
-                 VariableToken "a", AssignToken, IntToken 1, EndToken,
-                 ControlToken "while", TestStart, VariableToken "a", LesserEqualToken, IntToken 4, TestEnd, BlockStart, EndToken,
-                 CommandToken "echo", VariableToken "a", EndToken,
-                 VariableToken "a", AssignToken, VariableToken "a", BinaryPlusToken, IntToken 1, EndToken,
-                 BlockEnd, EndToken,
-                 BlockEnd, EndToken ]
-    let a = parseBasicBlock toks
-    print a
-    (x, y ) <- execute env ( fst a )
-    putStr ""

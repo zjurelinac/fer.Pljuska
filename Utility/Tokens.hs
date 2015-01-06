@@ -125,7 +125,7 @@ convertToData ( IntToken i )        = StaticData $ IntValue i
 convertToData ( StringToken s )     = StaticData $ StringValue s
 convertToData ( ParameterToken p )  = StaticData $ StringValue p
 convertToData ( VariableToken v )   = VarData $ Variable v
-convertToData _                     = error "Cannot convert to data object"
+convertToData x                     = error $ "Cannot convert to data object: " ++ show x
 
 
 toComparison :: Token -> Comparison
@@ -135,9 +135,9 @@ toComparison LesserToken        = Lesser
 toComparison GreaterToken       = Greater
 toComparison LesserEqualToken   = LesserEqual
 toComparison GreaterEqualToken  = GreaterEqual
-toComparison _                  = error "Not a comparison token"
+toComparison x                  = error $ "Not a comparison token: " ++ show x
 
 
 getCmdName :: Token -> String
 getCmdName ( CommandToken c )   = c
-getCmdName _                    = error "Not a command"
+getCmdName x                    = error $ "Not a command: " ++ show x

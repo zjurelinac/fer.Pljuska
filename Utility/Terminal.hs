@@ -8,7 +8,7 @@ module Utility.Terminal (
 ) where
 
 
-data Color = Red | Green | Yellow | Blue | Magenta | Cyan | Black | White deriving ( Show )
+data Color = Red | Green | Yellow | Blue | Magenta | Cyan | Black | White | Default deriving ( Show )
 data Weight = Normal | Bold deriving ( Show )
 
 data Style = Style Color Weight deriving ( Show )
@@ -31,6 +31,7 @@ colorCode Magenta   = "35"
 colorCode Cyan      = "36"
 colorCode Black     = "48"
 colorCode White     = "37"
+colorCode Default   = "48"
 
 
 weightCode :: Weight -> String

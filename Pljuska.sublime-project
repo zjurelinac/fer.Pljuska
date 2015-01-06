@@ -3,15 +3,7 @@
 	[
 		{
 			"follow_symlinks": true,
-			"path": "Language"
-		},
-		{
-			"follow_symlinks": true,
-			"path": "Utility"
-		},
-		{
-			"follow_symlinks": true,
-			"path": "Parsing"
+			"path": "."
 		}
 	]
 }
