@@ -1,6 +1,7 @@
 module Utility.Command (
     getArg,
-    getCommand
+    getCommand,
+    isSpecialArg
 ) where
 
 import Data.Maybe
@@ -17,4 +18,10 @@ getArg xs n
 -- unnecessary
 getCommand :: Environment -> String -> CommandFunction
 getCommand env name = commandList env M.! name
+
+
+isSpecialArg :: String -> Bool
+isSpecialArg [] = False
+isSpecialArg ( x : xs ) = x == '-'
+
 

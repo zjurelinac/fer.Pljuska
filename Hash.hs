@@ -1,7 +1,6 @@
 module Hash(
     runInteractive,
     runScript
-    --runTest
 ) where
 
 import Control.Exception hiding ( evaluate )
@@ -20,12 +19,14 @@ import Utility.Console
 import Utility.Data
 import Utility.Terminal
 
+
 runInteractive :: IO ()
 runInteractive = do
     env <- blankEnvironment
     startup env
     runOnce env
     return ()
+
 
 runOnce :: Environment -> IO ()
 runOnce env = do

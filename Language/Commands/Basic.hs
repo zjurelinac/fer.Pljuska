@@ -16,6 +16,7 @@ import System.Exit
 import System.Path
 
 import Language.Definitions
+import Utility.Command
 import Utility.Data
 import Utility.File
 import Utility.Terminal
@@ -46,6 +47,28 @@ echoCommand env args = return ( StringValue $ concatMap toString args, env )
 
 exitCommand :: CommandFunction
 exitCommand env args = exitSuccess
+
+
+grepCommand :: CommandFunction
+grepCommand env args
+    | null args     = error "Wrong grep command call"
+    | isCount       = ( IntVal $ length ls, env )
+    | otherwise     = ( NoValue, env )
+
+    where
+            args'       =   map toString args
+            isCount     =   hasArgument "-c" args'
+            noCase      =   hasArgument "-i" args'
+            showNumbers =   hasArgument "-n" args'
+            invert      =   hasArgument "-v" args'
+            onlyPart    =   hasArgument "-o" args'
+
+            hasArgument x = not . null . length . filter ( == x )
+
+            transform   =   if noCase then lower else id
+            modifier    =   if invert then not else id
+
+            pattern     =   tail . init $ args'
 
 
 hexdumpCommand :: CommandFunction
