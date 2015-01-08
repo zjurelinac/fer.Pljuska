@@ -1,0 +1,22 @@
+====================================================================================================
+    CPDIR -- copy directories
+====================================================================================================
+
+SYNTAX
+
+    cpdir directory1 [directory2] ... destination
+
+WHERE
+
+    directory1,
+    directory2,
+    ...             -   Relative or an absolute paths to directory
+
+    destination     -   A relative or an absolute path to a directory
+
+DESCRIPTION
+
+    If two arguments are provided, copy the first directory to the destination DIRECTORY ( not as a
+    parent, but as a new name ).
+    If more than 2 arguments are given, copy all directory to the destination DIRECTORY.
+

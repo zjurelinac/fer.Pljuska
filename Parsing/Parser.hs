@@ -132,6 +132,7 @@ parseCondition ( TestStart : toks ) = ( parseCondition' . preprocessCond [] . co
 parseCondition _    = error "Not a condition"
 
 
+-- BUGFIX potentially hide command output on assignments
 parseAssignment :: Parser
 parseAssignment ( VariableToken v : AssignToken : toks )    = ( AssignmentExpr $ Assignment ( Variable v ) expr, tail rest )
     where

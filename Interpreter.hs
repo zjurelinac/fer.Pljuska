@@ -21,6 +21,7 @@ defaultCommands = M.fromList [
                 ( "dir",        lsCommand       ),
                 ( "echo",       echoCommand     ),
                 ( "exit",       exitCommand     ),
+                ( "grep",       grepCommand     ),
                 ( "hexdump",    hexdumpCommand  ),
                 ( "ls",         lsCommand       ),
                 ( "mkdir",      mkdirCommand    ),

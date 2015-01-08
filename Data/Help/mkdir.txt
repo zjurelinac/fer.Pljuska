@@ -1,0 +1,19 @@
+====================================================================================================
+    MKDIR -- create a new directory
+====================================================================================================
+
+SYNTAX
+
+    mkdir directory1 [directory2] ...
+
+WHERE
+
+    directory1,
+    directory2,
+    ...             -   relative or an absolute paths of directories to be created
+
+DESCRIPTION
+
+    Create one or more directories with given names. If any one of them already exists, an error
+    will occur.
+

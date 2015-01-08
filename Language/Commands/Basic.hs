@@ -3,12 +3,14 @@ module Language.Commands.Basic (
     cdCommand,
     echoCommand,
     exitCommand,
+    grepCommand,
     hexdumpCommand,
     lsCommand,
     panicCommand,
     pwdCommand
 ) where
 
+import Data.Char
 import Data.List
 import qualified Data.ByteString.Lazy as BL
 import System.Directory
@@ -52,23 +54,30 @@ exitCommand env args = exitSuccess
 grepCommand :: CommandFunction
 grepCommand env args
     | null args     = error "Wrong grep command call"
-    | isCount       = ( IntVal $ length ls, env )
-    | otherwise     = ( NoValue, env )
+    | isCount       = return ( IntValue $ length ls, env )
+    | onlyPart      = return ( StringValue $ intercalate "\n" $ replicate ( length ls ) pattern, env )
+    | showNumbers   = return ( StringValue . intercalate "\n" . map ( \( x, y ) -> show x ++ " " ++ y ) $ nls, env )
+    | otherwise     = return ( StringValue $ intercalate "\n" ls, env )
 
     where
             args'       =   map toString args
-            isCount     =   hasArgument "-c" args'
-            noCase      =   hasArgument "-i" args'
-            showNumbers =   hasArgument "-n" args'
-            invert      =   hasArgument "-v" args'
-            onlyPart    =   hasArgument "-o" args'
+            isCount     =   containsArgument "-c" args'
+            showNumbers =   containsArgument "-n" args'
+            onlyPart    =   containsArgument "-o" args'
 
-            hasArgument x = not . null . length . filter ( == x )
+            noCase      =   containsArgument "-i" args'
+            invert      =   containsArgument "-v" args'
 
-            transform   =   if noCase then lower else id
+            transform   =   map ( if noCase then toLower else id )
             modifier    =   if invert then not else id
 
-            pattern     =   tail . init $ args'
+            ls          =   filter satisfies . lines . last $ args'
+            nls         =   filter ( satisfies . snd ) . zip [1..] . lines . last $ args'
+
+            pattern     =   last . init $ args'
+
+            satisfies :: String -> Bool
+            satisfies x =   modifier $ isInfixOf ( transform pattern ) ( transform x )
 
 
 hexdumpCommand :: CommandFunction

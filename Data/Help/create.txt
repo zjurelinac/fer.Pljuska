@@ -1,0 +1,19 @@
+====================================================================================================
+    CREATE -- create an empty file
+====================================================================================================
+
+SYNTAX
+
+    create file1 [file2] ...
+
+WHERE
+
+    file1,
+    file2,
+    ...             -   Relative or an absolute paths to files
+
+DESCRIPTION
+
+    Create one or more new, empty files named file1, file2... If any of the files already exists,
+    it's contents will be cleared.
+

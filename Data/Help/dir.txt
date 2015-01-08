@@ -1,16 +1,18 @@
 ====================================================================================================
-    LS -- list directory contents
+    DIR -- list directory contents
 ====================================================================================================
 
 SYNTAX
 
-    ls [directory]
+    dir [directory]
 
 WHERE
 
     directory    -   a relative or an absolute path of a directory whose contents are to be listed
 
 DESCRIPTION
+
+    Alias of `ls`.
 
     List all the files and subdirectories contained in a given directory, first directories, and
     then files, sorted by name.

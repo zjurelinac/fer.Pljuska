@@ -1,0 +1,18 @@
+====================================================================================================
+    CD -- change working directory
+====================================================================================================
+
+SYNTAX
+
+    cd [directory]
+
+WHERE
+
+    directory   -   Relative or absolute path to a directory which is to become a new working
+                    directory
+
+DESCRIPTION
+
+    The cd command changes the current working directory to the new one. If no directory is
+    provided as an argument, the user home folder is set as working directory instead.
+

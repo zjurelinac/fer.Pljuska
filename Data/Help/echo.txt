@@ -1,0 +1,17 @@
+====================================================================================================
+    ECHO -- output arguments
+====================================================================================================
+
+SYNTAX
+
+    echo arg1 [arg2] ...
+
+WHERE
+
+    arg1    -   can be a string or an integer constant, or a variable
+
+DESCRIPTION
+
+    Outputs the values of the arguments. If they're variables, their values are shown.
+    Multiple arguments are outputed in sequence, without any separators.
+

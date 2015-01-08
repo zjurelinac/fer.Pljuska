@@ -1,0 +1,16 @@
+====================================================================================================
+    HEXDUMP -- output contents of a binary file
+====================================================================================================
+
+SYNTAX
+
+    hexdump file
+
+WHERE
+
+    file        -   a relative or an absolute path of a file whose contents are to be shown
+
+DESCRIPTION
+
+    Outputs contents of a binary file as a sequence of bytes represented as hexadecimal numbers.
+

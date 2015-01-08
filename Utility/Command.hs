@@ -1,4 +1,5 @@
 module Utility.Command (
+    containsArgument,
     getArg,
     getCommand,
     isSpecialArg
@@ -8,6 +9,11 @@ import Data.Maybe
 import qualified Data.Map as M
 
 import Language.Definitions
+
+
+containsArgument :: String -> [ String ] -> Bool
+containsArgument x = ( /= 0 ) . length . filter ( == x )
+
 
 -- unnecessary
 getArg :: [ PrimitiveType ] -> Int -> Maybe PrimitiveType

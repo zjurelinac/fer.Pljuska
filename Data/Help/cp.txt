@@ -1,0 +1,21 @@
+====================================================================================================
+    CP -- copy files
+====================================================================================================
+
+SYNTAX
+
+    cp file1 [file2] ... destination
+
+WHERE
+
+    file1,
+    file2,
+    ...             -   Relative or an absolute paths to files
+
+    destination     -   A relative or an absolute path to either a file or a directory
+
+DESCRIPTION
+
+    If two arguments are provided, copy the first file to the destination FILE.
+    If more than 2 arguments are given, copy all files to the destination DIRECTORY.
+

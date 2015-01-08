@@ -1,0 +1,17 @@
+====================================================================================================
+    CAT -- display file contents
+====================================================================================================
+
+SYNTAX
+
+    cat filename
+
+WHERE
+
+    filename    -- relative or absolute path of a file whose contents are to be displayed
+
+DESCRIPTION
+
+    The cat command returns the textual contents of a given file. If the file is binary instead of
+    textual, the error will occur.
+
