@@ -17,6 +17,7 @@ import Parsing.Tokenizer
 import Parsing.Parser
 import Utility.Console
 import Utility.Data
+import Utility.File
 import Utility.Terminal
 
 
@@ -42,8 +43,9 @@ runOnce env = do
 
 runScript :: FilePath -> IO ()
 runScript fp = do
+    setInitialDirectory fp
     env <- blankEnvironment
-    runScript' fp env
+    runScript' ( getBaseName fp ) env
     return ()
 
 
@@ -65,8 +67,9 @@ startup env = do
 
 procError :: SomeException -> IO ()
 procError e = do
-    if show e == "ExitSuccess"
-        then exitSuccess
-        else putStrLn . errorString $ show e
+    let er = show e
+    if er == "ExitSuccess" then exitSuccess else return ()
+    let er' = if ( take 5 er ) == "Map.!" then "No such command exists" else er
+    putStrLn . errorString $ er'
     return ()
 

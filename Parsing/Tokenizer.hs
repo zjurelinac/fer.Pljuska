@@ -231,7 +231,6 @@ contextualizeTokens = reverse . fst . foldl determineToken ( [], NoContext )
             determineToken ( xs, c ) t@( OperatorToken ot )
                 | ot == "+"     = ( BinaryPlusToken : xs, ArithmeticContext )
                 | ot == "*"     = ( MultiplyToken : xs, ArithmeticContext )
-                -- bugfix needed
                 | ot == "/"     = ( DivideToken : xs, ArithmeticContext )
 
                 | ot == "%"     = ( ModuloToken : xs, ArithmeticContext )

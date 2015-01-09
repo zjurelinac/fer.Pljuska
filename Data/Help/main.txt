@@ -5,20 +5,21 @@ Type help 'command' to find out more about a certain command
 
 List of available commands:
 ====================================================================================================
-cat         - Output contents of a text file
-cd          - Change directory
-chmod       - Change file permissions
-cp          - Copy files
-cpdir       - Copy directories
-create      - Create an empty file
-echo        - Output the arguments
-grep        - Find a given pattern in the arguments
-hexdump     - Display condents of a binary file
-ls          - Show directory contents
-mkdir       - Create a new directory
-mv          - Move files
-mvdir       - Move directories
-pwd         - Output current directory
-rm          - Remove files
-rmdir       - Remove directories
+
+    cat         - Output contents of a text file
+    cd          - Change directory
+    chmod       - Change file permissions
+    cp          - Copy files
+    cpdir       - Copy directories
+    create      - Create an empty file
+    echo        - Output the arguments
+    grep        - Find a given pattern in the arguments
+    hexdump     - Display condents of a binary file
+    ls          - Show directory contents
+    mkdir       - Create a new directory
+    mv          - Move files
+    mvdir       - Move directories
+    pwd         - Output current directory
+    rm          - Remove files
+    rmdir       - Remove directories
 

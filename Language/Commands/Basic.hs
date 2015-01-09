@@ -12,12 +12,12 @@ module Language.Commands.Basic (
 
 import Data.Char
 import Data.List
-import qualified Data.ByteString.Lazy as BL
 import System.Directory
 import System.Exit
 import System.Path
 
 import Language.Definitions
+import Language.Core
 import Utility.Command
 import Utility.Data
 import Utility.File
@@ -26,9 +26,9 @@ import Utility.Terminal
 
 catCommand :: CommandFunction
 catCommand env args = do
-    let fn = toString $ head args
-    x <- readFile fn
-    return $ ( StringValue x, env )
+    let fs = map toString $ args
+    xs <- mapM readFile fs
+    return $ ( StringValue $ intercalate "\n" xs, env )
 
 
 cdCommand :: CommandFunction
@@ -38,8 +38,9 @@ cdCommand env args
         setCurrentDirectory f
         return ( NoValue, env { currentDirectory = f } )
     | otherwise             = do
-        let f = getAbsolutePath ( currentDirectory env ) ( toString $ head args )
-        setCurrentDirectory f
+        let a = ( toString $ head args )
+        setCurrentDirectory a
+        f <- getCurrentDirectory
         return ( NoValue, env { currentDirectory = f } )
 
 
@@ -82,8 +83,8 @@ grepCommand env args
 
 hexdumpCommand :: CommandFunction
 hexdumpCommand env args = do
-    x <- BL.readFile $ toString $ head args
-    return ( StringValue $ prettyBytes x, env )
+    x <- readBinaryFile $ toString $ head args
+    return ( StringValue $ x, env )
 
 
 -- possibly other improvements, like styling, display options...
@@ -109,7 +110,7 @@ panicCommand :: CommandFunction
 panicCommand env args
 -- A basic list of all commands
     | null args     = do
-        h <- readFile "Data/Help/main.txt"
+        h <- readFile $ toString ( evaluate env ( VarData $ Variable "BASEPATH" ) ) ++ "/Data/Help/main.txt"
         return ( StringValue h, env )
 -- Help for a particular command
     | otherwise     = do

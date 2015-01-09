@@ -1,7 +1,8 @@
 module Utility.File (
     directorize,
     getAbsolutePath,
-    getBaseName
+    getBaseName,
+    getParentPath
 ) where
 
 
@@ -15,6 +16,10 @@ getAbsolutePath curr fp
 
 getBaseName :: FilePath -> FilePath
 getBaseName = reverse . takeWhile ( /= '/' ) . reverse
+
+
+getParentPath :: FilePath -> FilePath
+getParentPath = reverse . dropWhile ( /= '/' ) . reverse
 
 
 directorize :: FilePath -> FilePath

@@ -3,6 +3,7 @@ module Utility.Data (
     isIdentifierStart,
     isVarIdentifier,
     prettyBytes,
+    readBinaryFile,
     splitOn,
     toInt,
     toString,
@@ -61,6 +62,11 @@ prettyBytes = intercalate " " . map wordToHex . BL.unpack
 wordToHex :: Word8 -> String
 wordToHex = printf "%02X"
 
+
+readBinaryFile :: FilePath -> IO String
+readBinaryFile x = do
+    y <- BL.readFile x
+    return $ prettyBytes y
 
 
 -- Token selection functions

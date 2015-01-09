@@ -10,6 +10,8 @@ import Language.Definitions
 import Language.Commands.Basic
 import Language.Commands.Filesystem
 
+import Utility.File
+
 
 defaultCommands :: CommandList
 defaultCommands = M.fromList [
@@ -44,13 +46,16 @@ blankEnvironment = do
         commandList         = defaultCommands,
         currentDirectory    = fp,
         lastReturn          = NoValue,
-        variables           = M.empty }
+        variables           = M.fromList [
+            ( "HOME",           StringValue "/home/sigma"     ),
+            ( "BASEPATH",       StringValue "/home/sigma/Programming/Haskell/Projects/Pljuska" )
+        ] }
 
 
--- Create a new, blank environment, with a custom directory
-blankDirEnvironment :: FilePath -> IO Environment
-blankDirEnvironment fp = do
-    env <- blankEnvironment
-    return $ env { currentDirectory = fp }
+-- Set initial directory
+setInitialDirectory :: FilePath -> IO ()
+setInitialDirectory x = do
+    let d = getParentPath x
+    setCurrentDirectory d
 
 

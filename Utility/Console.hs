@@ -24,7 +24,10 @@ helpMessage = "For help and a list of commands, type `panic`.\n"
 
 
 displayStartScreen :: IO ()
-displayStartScreen = putStrLn $ styledString ( Style Cyan Normal ) introMessage
+displayStartScreen = do
+    Term.clearScreen
+    Term.setCursorPosition 0 0
+    putStrLn $ styledString ( Style Cyan Normal ) introMessage
                              ++ styledString ( Style Magenta Bold ) helpMessage
 
 
