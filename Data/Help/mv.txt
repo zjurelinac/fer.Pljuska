@@ -1,0 +1,21 @@
+====================================================================================================
+    MV -- move files
+====================================================================================================
+
+SYNTAX
+
+    mv file1 [file2] ... destination
+
+WHERE
+
+    file1,
+    file2,
+    ...             -   Relative or an absolute paths to files
+
+    destination     -   A relative or an absolute path to either a file or a directory
+
+DESCRIPTION
+
+    If two arguments are provided, change the name of the file into the destination.
+    If more than 2 arguments are given, move all files to the destination DIRECTORY.
+

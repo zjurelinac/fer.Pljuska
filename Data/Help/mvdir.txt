@@ -1,0 +1,20 @@
+====================================================================================================
+    MVDIR -- move directories
+====================================================================================================
+
+SYNTAX
+
+    mvdir directory1 [directory2] ... destination
+
+WHERE
+
+    directory1,
+    directory2,
+    ...             -   Relative or an absolute paths to directory
+
+    destination     -   A relative or an absolute path to a directory
+
+DESCRIPTION
+
+    If two arguments are provided, change name of the first directory into destination.
+    If more than 2 arguments are given, move all directories to the destination directory.

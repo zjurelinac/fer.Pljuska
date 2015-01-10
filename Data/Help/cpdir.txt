@@ -18,5 +18,5 @@ DESCRIPTION
 
     If two arguments are provided, copy the first directory to the destination DIRECTORY ( not as a
     parent, but as a new name ).
-    If more than 2 arguments are given, copy all directory to the destination DIRECTORY.
+    If more than 2 arguments are given, copy all directories to the destination DIRECTORY.
 

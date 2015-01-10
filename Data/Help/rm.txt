@@ -1,0 +1,18 @@
+====================================================================================================
+    RM -- remove files
+====================================================================================================
+
+SYNTAX
+
+    rm file1 [file2] ...
+
+WHERE
+
+    file1,
+    file2,
+    ...             -   Relative or an absolute paths to files
+
+DESCRIPTION
+
+    Permanently delete all the files provided as arguments.
+

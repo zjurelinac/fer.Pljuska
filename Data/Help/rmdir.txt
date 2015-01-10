@@ -1,0 +1,18 @@
+====================================================================================================
+    RMDIR -- remove directories
+====================================================================================================
+
+SYNTAX
+
+    rmdir directory1 [directory2] ...
+
+WHERE
+
+    directory1,
+    directory2,
+    ...             -   Relative or an absolute paths to directory
+
+DESCRIPTION
+
+    Permanently delete all the directories provided as arguments. If any of the directories is not
+    empty, an error will occur.

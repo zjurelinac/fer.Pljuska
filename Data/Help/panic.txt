@@ -1,0 +1,20 @@
+====================================================================================================
+    PANIC -- show help
+====================================================================================================
+
+SYNTAX
+
+    panic [command]
+
+WHERE
+
+    command     - a command whose description is to be shown
+
+DESCRIPTION
+
+    Display help information. If no argument is provided, a list of all commands with short
+    descriptions is shown.
+
+    If a command is given, it's description, call syntax and all variants and possible
+    options are shown.
+

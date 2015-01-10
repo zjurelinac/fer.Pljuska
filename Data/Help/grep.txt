@@ -1,0 +1,28 @@
+====================================================================================================
+    GREP -- find a given pattern in the argument
+====================================================================================================
+
+SYNTAX
+
+    grep [ options ] pattern input
+
+WHERE
+
+    pattern     -   a string literal whose occurrences are to be found
+    input       -   the input string which is searched for the pattern
+
+DESCRIPTION
+
+    Select and display lines of the input containing the pattern.
+
+OPTIONS
+
+    -c      --  Return only the number of matched lines
+
+    -n      --  Prepend each displayed line with it's line number
+
+    -i      --  Perform the case-insensitive search
+
+    -v      --  Invert selection - display only lines NOT containing the pattern
+
+    -o      --  Display only parts of the lines matching the given pattern
