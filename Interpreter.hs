@@ -4,6 +4,7 @@ import Data.Maybe
 import qualified Data.Map as M
 
 import System.Directory
+import System.Environment
 
 import Language.Core
 import Language.Definitions
@@ -42,12 +43,16 @@ defaultCommands = M.fromList [
 blankEnvironment :: IO Environment
 blankEnvironment = do
     fp <- getCurrentDirectory
+    h <- getEnv "HOME"
+    u <- getEnv "USER"
     return $ Environment {
         commandList         = defaultCommands,
         currentDirectory    = fp,
         lastReturn          = NoValue,
         variables           = M.fromList [
-            ( "HOME",           StringValue "/home/sigma"     ),
+            ( "HOME",           StringValue h ),
+            ( "CONF",           StringValue $ h ++ "/.hashrc" ),
+            ( "USER",           StringValue u ),
             ( "BASEPATH",       StringValue "/home/sigma/Programming/Haskell/Projects/Pljuska" )
         ] }
 
@@ -56,6 +61,6 @@ blankEnvironment = do
 setInitialDirectory :: FilePath -> IO ()
 setInitialDirectory x = do
     let d = getParentPath x
-    setCurrentDirectory d
-
+    if null d then return ()
+        else setCurrentDirectory d
 

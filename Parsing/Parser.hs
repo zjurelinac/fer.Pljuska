@@ -99,6 +99,16 @@ parseCommand' inpipe xs
                         ins             = dropWhile ( not . isInRedirect ) toks
 
 
+hideCommandOutput :: Expression -> Expression
+hideCommandOutput ( CommandExpr cmd )   = CommandExpr $ hideCommandOutput' cmd
+hideCommandOutput _                     = error "Not a command, cannot hide output."
+
+
+hideCommandOutput' :: Command -> Command
+hideCommandOutput' ( Basic bc ) = Basic $ bc { displayOutput = False }
+hideCommandOutput' ( PipedCommand bc c ) = PipedCommand bc $ hideCommandOutput' c
+
+
 data CondBuilder = BasicCond Condition | Combinator Token
                  deriving ( Show )
 
@@ -132,13 +142,12 @@ parseCondition ( TestStart : toks ) = ( parseCondition' . preprocessCond [] . co
 parseCondition _    = error "Not a condition"
 
 
--- BUGFIX potentially hide command output on assignments
 parseAssignment :: Parser
 parseAssignment ( VariableToken v : AssignToken : toks )    = ( AssignmentExpr $ Assignment ( Variable v ) expr, tail rest )
     where
             ( ts, rest )    = break isEnd toks
             expr            = case head ts of
-                ( CommandToken _ )  ->  fst . parseCommand $ ts
+                ( CommandToken _ )  ->  hideCommandOutput . fst . parseCommand $ ts
                 _                   ->  fst . parseArithmetic $ ts
 parseAssignment _                                           = error "Syntax error: invalid assignment"
 

@@ -24,8 +24,9 @@ import Utility.Terminal
 runInteractive :: IO ()
 runInteractive = do
     env <- blankEnvironment
-    startup env
-    runOnce env
+    env' <- runRcFile env
+    startup env'
+    runOnce env'
     return ()
 
 
@@ -45,16 +46,24 @@ runScript :: FilePath -> IO ()
 runScript fp = do
     setInitialDirectory fp
     env <- blankEnvironment
-    runScript' ( getBaseName fp ) env
+    env' <- runRcFile env
+    _ <- runScript' ( getBaseName fp ) env'
     return ()
 
 
-runScript' :: FilePath -> Environment -> IO ()
+runScript' :: FilePath -> Environment -> IO Environment
 runScript' fp env = do
     s <- readFile fp
     let c = parseInput s
-    _ <- execute env c
-    return ()
+    ( _, env' ) <- execute env c
+    return env'
+
+
+runRcFile :: Environment -> IO Environment
+runRcFile env = do
+    let h = toString $ evaluate env $ VarData $ Variable "CONF"
+    env' <- runScript' h env
+    return env'
 
 
 startup :: Environment -> IO ()

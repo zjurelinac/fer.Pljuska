@@ -115,7 +115,8 @@ panicCommand env args
 -- Help for a particular command
     | otherwise     = do
         let a = args !! 0
-        h <- readFile $ "Data/Help/" ++ toString a ++ ".txt"
+        let b = toString $ evaluate env $ VarData $ Variable "BASEPATH"
+        h <- readFile $ b ++ "/Data/Help/" ++ toString a ++ ".txt"
         return ( StringValue h, env )
 
 
