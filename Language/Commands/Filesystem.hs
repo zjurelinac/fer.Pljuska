@@ -1,5 +1,6 @@
 module Language.Commands.Filesystem (
     createCommand,
+    chmodCommand,
     cpCommand,
     cpdirCommand,
     mkdirCommand,
@@ -86,6 +87,65 @@ rmdirCommand env args = do
     return ( NoValue, env )
 
 
--- chmodCommand :: CommandFunction
--- chmodCommand env args = do
+chmodCommand :: CommandFunction
+chmodCommand env args
+    | length args == 2  = do
+        let f = toString $ last args
+        let c = toString $ head args
+        ops <- getPermissions f
+        isf <- doesFileExist f
+        nps <- return $ case head c of
+            '+'     ->  addPerms ops isf $ tail c
+            '-'     ->  removePerms ops isf $ tail c
+            '='     ->  setPerms ops isf $ tail c
+            _       ->  setPerms ops isf c
+        setPermissions f nps
+        return ( NoValue, env )
+    | otherwise         = error "chmod needs exactly 2 arguments, a permission mask and a file"
 
+    where
+            setPerms :: Permissions -> Bool -> String -> Permissions
+            setPerms ps b xs = ps { readable = 'r' `elem` xs,
+                                    writable = 'w' `elem` xs,
+                                    executable = 'x' `elem` xs && b,
+                                    searchable = 'x' `elem` xs && not b }
+
+
+            addPerms :: Permissions -> Bool -> String -> Permissions
+            addPerms ps b xs = addReadPerm xs . addWritePerm xs . ( if b then addExecPerm xs else addSearchPerm xs ) $ ps
+
+            addReadPerm xs ps
+                | 'r' `elem` xs = ps { readable = True }
+                | otherwise     = ps
+
+            addWritePerm xs ps
+                | 'w' `elem` xs = ps { writable = True }
+                | otherwise     = ps
+
+            addExecPerm xs ps
+                | 'x' `elem` xs = ps { executable = True }
+                | otherwise     = ps
+
+            addSearchPerm xs ps
+                | 'x' `elem` xs = ps { searchable = True }
+                | otherwise     = ps
+
+
+            removePerms :: Permissions -> Bool -> String -> Permissions
+            removePerms ps b xs = removeReadPerm xs . removeWritePerm xs . ( if b then removeExecPerm xs else removeSearchPerm xs ) $ ps
+
+            removeReadPerm xs ps
+                | 'r' `elem` xs = ps { readable = False }
+                | otherwise     = ps
+
+            removeWritePerm xs ps
+                | 'w' `elem` xs = ps { writable = False }
+                | otherwise     = ps
+
+            removeExecPerm xs ps
+                | 'x' `elem` xs = ps { executable = False }
+                | otherwise     = ps
+
+            removeSearchPerm xs ps
+                | 'x' `elem` xs = ps { searchable = False }
+                | otherwise     = ps

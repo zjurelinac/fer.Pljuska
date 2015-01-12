@@ -34,7 +34,6 @@ parseArithmetic toks = ( ArithmeticExpr $ head $ parseArithmetic' [] $ convertTo
                 ) ts
 
 
--- Potential error, check reversing operators -- EXTENSIVE TESTING REQUIRED
 convertToRPN :: [ Token ] -> [ Token ]
 convertToRPN = reverse . convertToRPN' [] []
     where

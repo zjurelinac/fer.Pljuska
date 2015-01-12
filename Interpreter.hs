@@ -18,6 +18,7 @@ defaultCommands :: CommandList
 defaultCommands = M.fromList [
                 ( "cat",        catCommand      ),
                 ( "cd",         cdCommand       ),
+                ( "chmod",      chmodCommand    ),
                 ( "cp",         cpCommand       ),
                 ( "cpdir",      cpdirCommand    ),
                 ( "create",     createCommand   ),
