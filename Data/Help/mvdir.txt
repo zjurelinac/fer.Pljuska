@@ -10,7 +10,7 @@ WHERE
 
     directory1,
     directory2,
-    ...             -   Relative or an absolute paths to directory
+    ...             -   Relative or absolute paths to directories
 
     destination     -   A relative or an absolute path to a directory
 

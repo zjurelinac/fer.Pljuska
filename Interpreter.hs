@@ -14,6 +14,7 @@ import Language.Commands.Filesystem
 import Utility.File
 
 
+-- A list of all supported commands
 defaultCommands :: CommandList
 defaultCommands = M.fromList [
                 ( "cat",        catCommand      ),

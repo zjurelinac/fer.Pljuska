@@ -1,0 +1,26 @@
+====================================================================================================
+    CHMOD -- change file permissions
+====================================================================================================
+
+SYNTAX
+
+    chmod [+|-|=]mask file1 [file2] ...
+
+WHERE
+
+    mask            -   A Linux/Unix permission mask ( eg. rwx )
+
+    file1,
+    file2,
+    ...             -   Relative or absolute paths to files
+
+
+DESCRIPTION
+
+    If the mask starts with a '+', add listed permissions to all the files.
+    If the mask starts with a '-', remove listed permissions from all the files.
+    If the mask starts with a '=', or is just a permission list, set file permissions to the listed
+    ones.
+
+    For more info about meaning of a rwx mask, consult a Linux/Unix manual.
+

@@ -10,7 +10,7 @@ WHERE
 
     directory1,
     directory2,
-    ...             -   relative or an absolute paths of directories to be created
+    ...             -   Relative or absolute paths of directories to be created
 
 DESCRIPTION
 

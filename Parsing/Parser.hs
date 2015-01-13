@@ -10,9 +10,11 @@ import Utility.Data
 import Utility.Tokens
 
 
+-- A parser type - given a list of tokens, return the parsed expression, and the remaining unparsed tokens
 type Parser = ( [ Token ] -> ( Expression, [ Token ] ) )
 
 
+-- Parse a RPN arithmetic expression
 parseArithmetic :: Parser
 parseArithmetic toks = ( ArithmeticExpr $ head $ parseArithmetic' [] $ convertToRPN ts, tail rest )
     where
@@ -34,6 +36,7 @@ parseArithmetic toks = ( ArithmeticExpr $ head $ parseArithmetic' [] $ convertTo
                 ) ts
 
 
+-- Convert from infix to RPN, using Dijkstra's shunting-yard algorithm
 convertToRPN :: [ Token ] -> [ Token ]
 convertToRPN = reverse . convertToRPN' [] []
     where
@@ -66,12 +69,14 @@ convertToRPN = reverse . convertToRPN' [] []
                 | otherwise                     = operatorPrecedence x >= i
 
 
+-- Parse command expression, wrapper function
 parseCommand :: Parser
 parseCommand toks = ( CommandExpr $ parseCommand' False ts, tail rest )
     where
             ( ts, rest ) = break isEnd toks
 
 
+-- Parse a command, could be composite ( with piping ) or simple
 parseCommand' :: Bool -> [ Token ] -> Command
 parseCommand' inpipe xs
     | null rest     = Basic $ parseBasic toks inpipe False
@@ -98,20 +103,24 @@ parseCommand' inpipe xs
                         ins             = dropWhile ( not . isInRedirect ) toks
 
 
+-- Prevent command from printing output on execution in assignments
 hideCommandOutput :: Expression -> Expression
 hideCommandOutput ( CommandExpr cmd )   = CommandExpr $ hideCommandOutput' cmd
 hideCommandOutput _                     = error "Not a command, cannot hide output."
 
 
+-- Prevent command from printing output on execution in assignments
 hideCommandOutput' :: Command -> Command
 hideCommandOutput' ( Basic bc ) = Basic $ bc { displayOutput = False }
 hideCommandOutput' ( PipedCommand bc c ) = PipedCommand bc $ hideCommandOutput' c
 
 
+-- Helper data structure for building complex conditions
 data CondBuilder = BasicCond Condition | Combinator Token
                  deriving ( Show )
 
 
+-- Build a list of helper CondBuilder structures - wrap simple tests into BasicConds
 preprocessCond :: [ Token ] -> [ Token ] -> [ CondBuilder ]
 preprocessCond xs []
     | null xs           = []
@@ -123,6 +132,7 @@ preprocessCond xs ( y : ys )
     | otherwise         = ( Combinator y ) : preprocessCond [] ys
 
 
+-- Construct a condition from CondBuilder structures
 parseCondition' :: [ CondBuilder ] -> Condition
 parseCondition' = parseCondition'' []
     where
@@ -135,12 +145,14 @@ parseCondition' = parseCondition'' []
                 ( Combinator AndToken ) ->  parseCondition'' ( AndCondition ( xs !! 1 ) ( xs !! 0 ) : drop 2 xs ) ys
 
 
+-- Condition parser
 parseCondition :: ( [ Token ] -> ( Condition, [ Token ] ) )
 parseCondition ( TestStart : toks ) = ( parseCondition' . preprocessCond [] . convertToRPN $ ts, tail rest )
     where ( ts, rest ) = break isTestEnd toks
 parseCondition _    = error "Not a condition"
 
 
+-- Parse an assignment statement
 parseAssignment :: Parser
 parseAssignment ( VariableToken v : AssignToken : toks )    = ( AssignmentExpr $ Assignment ( Variable v ) expr, tail rest )
     where
@@ -151,6 +163,7 @@ parseAssignment ( VariableToken v : AssignToken : toks )    = ( AssignmentExpr $
 parseAssignment _                                           = error "Syntax error: invalid assignment"
 
 
+-- Expression parser, determines the expression type and calls the corresponding specific parser
 parseExpression :: Parser
 parseExpression toks = case head toks of
     ( VariableToken _ )     -> parseAssignment toks
@@ -162,7 +175,7 @@ parseExpression toks = case head toks of
     _                       -> error "Invalid expression"
 
 
-
+-- Parse an if block, supports both if-else and only if statements. No elsif though, those have to be nested
 parseIfBlock :: Parser
 parseIfBlock ( ControlToken ct : toks )
     | ct == "if"    = ( BlockExpr $ IfBlock cond b1 b2, rest2 )
@@ -175,6 +188,8 @@ parseIfBlock ( ControlToken ct : toks )
                                 else ( BlockExpr $ BasicBlock [ VoidExpr ], rest1 )
 parseIfBlock _      = error "Not an if block"
 
+
+-- Parse a while block
 parseWhileBlock :: Parser
 parseWhileBlock ( ControlToken ct : toks )
     | ct == "while"     = ( BlockExpr $ WhileBlock cond b, rest1 )
@@ -185,6 +200,7 @@ parseWhileBlock ( ControlToken ct : toks )
 parseWhileBlock _       = error "Not a while block"
 
 
+-- Parse a basic block
 parseBasicBlock :: Parser
 parseBasicBlock ( BlockStart : toks ) = ( BlockExpr $ BasicBlock exprs, rest' )
     where
@@ -193,6 +209,7 @@ parseBasicBlock ( BlockStart : toks ) = ( BlockExpr $ BasicBlock exprs, rest' )
 parseBasicBlock _ = error "Not a block"
 
 
+-- Parse basic block
 parseBBlock :: [ Token ] -> ( [ Expression ], [ Token ] )
 parseBBlock ( BlockEnd : ts ) = ( [], ts )
 parseBBlock ts = ( expr : next, rest' )
@@ -201,5 +218,6 @@ parseBBlock ts = ( expr : next, rest' )
             ( next, rest' ) = parseBBlock rest
 
 
+-- Construct an executable expression from the input string
 parseInput :: String -> Expression
 parseInput = fst . parseBasicBlock . tokenizeInput

@@ -9,7 +9,6 @@ import Data.Ord
 
 import Utility.Data
 
--- /int-int error - absolute paths should be in quotes
 data Token  = StringToken       String      -- Anything between ""
             | IntToken          Int         -- A numeric constant
             | CommentToken      String      -- Anything after # in a line
@@ -71,6 +70,7 @@ data Token  = StringToken       String      -- Anything between ""
             deriving ( Eq, Show )
 
 
+-- A tokenizer type - given a string, return the recognized token, together with the untokenized remains
 type Tokenizer = ( String -> ( Token, String ) )
 
 
@@ -78,10 +78,12 @@ tokenDelims :: String
 tokenDelims = " \t\n()[]{}+-*/%&|"
 
 
+-- If parsing fails, return the reconstructed input string
 restoreAll :: ( String, String ) -> ( String, String )
 restoreAll ( xs, ys ) = ( "", reverse xs ++ ys )
 
 
+-- Select a comment from the input
 readComment :: Tokenizer
 readComment xs
     | null recognized   = ( NullToken, xs )
@@ -97,6 +99,7 @@ readComment xs
         readComment' ( ys, ( x : xs ) ) = readComment' ( x : ys, xs )   -- Propagation if conditions satisfied
 
 
+-- Select a string from the input
 readString :: Tokenizer
 readString xs
     | null recognized   = ( NullToken, xs )
@@ -114,6 +117,8 @@ readString xs
             | otherwise                 = readString' ( x : yl, xs )    -- Propagation
 
 
+
+-- Select an integer from the input
 readInt :: Tokenizer
 readInt xs
     | null recognized   = ( NullToken, xs )
@@ -132,6 +137,7 @@ readInt xs
             | otherwise             = restoreAll a                      -- Matching failure
 
 
+-- Select a variable from the input
 readVar :: Tokenizer
 readVar xs
     | null recognized   = ( NullToken, xs )
@@ -149,6 +155,7 @@ readVar xs
             | otherwise             = a                                 -- Termination
 
 
+-- Select an identifier from the input
 readIdentifier :: Tokenizer
 readIdentifier xs
     | null recognized   = ( NullToken, xs )
@@ -167,6 +174,7 @@ readIdentifier xs
             | otherwise             = a                                 -- Termination
 
 
+-- Select an operator from the input
 readOperator :: Tokenizer
 readOperator xs = if null len2ops
     then
@@ -182,6 +190,7 @@ readOperator xs = if null len2ops
         len1ops     = selectFrom [ "+", "-", "*", "/", "%", "<", ">", "=", "|", "!" ]
 
 
+-- Select a special symbol from the input
 readSymbol :: Tokenizer
 readSymbol [] = ( NullToken, "" )
 readSymbol ( x : xs )
@@ -189,6 +198,7 @@ readSymbol ( x : xs )
     | otherwise             = ( NullToken, x : xs )
 
 
+-- Tokenize given string ( a single line ) into a list of basic tokens
 tokenizeString' :: String -> [ Token ]
 tokenizeString' [] = []
 tokenizeString' xs
@@ -212,10 +222,12 @@ tokenizeString' xs
             readIdentifier ]
 
 
+-- Possible token contexts
 data Context = ArithmeticContext | CommandContext | ConditionContext | NoContext
              deriving ( Eq, Show )
 
--- Check for minuses and strings
+
+-- Further specify each token's semantic role
 contextualizeTokens :: [ Token ] -> [ Token ]
 contextualizeTokens = reverse . fst . foldl determineToken ( [], NoContext )
     where
@@ -278,18 +290,22 @@ contextualizeTokens = reverse . fst . foldl determineToken ( [], NoContext )
             commandWords = [ "if", "while", "else" ]
 
 
+-- Complete line tokenization and clearing of comments
 tokenizeString :: String -> [ Token ]
 tokenizeString = filter ( not . isComment ) . contextualizeTokens . tokenizeString'
 
 
+-- Tokenize the whole input, line by line
 tokenizeInput' :: String -> [ Token ]
 tokenizeInput' = flip (++) [ EndToken ] . intercalate [ EndToken ] . filter ( not . null ) . map tokenizeString . splitOn "\n;"
 
 
+-- Return tokenized input, prepared for block parsing
 tokenizeInput :: String -> [ Token ]
 tokenizeInput xs = BlockStart : ( tokenizeInput' xs ) ++ [ BlockEnd, EndToken ]
 
 
+-- Is given token a comment
 isComment :: Token -> Bool
 isComment ( CommentToken _ )    = True
 isComment _                     = False

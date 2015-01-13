@@ -89,21 +89,26 @@ rmdirCommand env args = do
 
 chmodCommand :: CommandFunction
 chmodCommand env args
-    | length args == 2  = do
-        let f = toString $ last args
+    | length args >= 2  = do
+        let fs = map toString . tail $ args
         let c = toString $ head args
-        ops <- getPermissions f
-        isf <- doesFileExist f
-        nps <- return $ case head c of
-            '+'     ->  addPerms ops isf $ tail c
-            '-'     ->  removePerms ops isf $ tail c
-            '='     ->  setPerms ops isf $ tail c
-            _       ->  setPerms ops isf c
-        setPermissions f nps
+        mapM_ ( updatePerms c ) fs
         return ( NoValue, env )
-    | otherwise         = error "chmod needs exactly 2 arguments, a permission mask and a file"
+    | otherwise         = error "chmod needs more than one argument, a permission mask and a list of files"
 
     where
+            updatePerms :: String -> FilePath -> IO ()
+            updatePerms c f = do
+                ops <- getPermissions f
+                isf <- doesFileExist f
+                nps <- return $ case head c of
+                    '+'     ->  addPerms ops isf $ tail c
+                    '-'     ->  removePerms ops isf $ tail c
+                    '='     ->  setPerms ops isf $ tail c
+                    _       ->  setPerms ops isf c
+                setPermissions f nps
+
+
             setPerms :: Permissions -> Bool -> String -> Permissions
             setPerms ps b xs = ps { readable = 'r' `elem` xs,
                                     writable = 'w' `elem` xs,
