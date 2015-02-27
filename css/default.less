@@ -55,10 +55,17 @@ h4{
 }
 
 h6{
-    color           :   #777;
     font-size       :   18px;
     line-height     :   24px;
     margin-top      :   12px;
+
+    a[ href ]{
+        color           :   #777;
+
+        &:hover{
+            color           :   @red;
+        }
+    }
 }
 
 b{
@@ -90,6 +97,50 @@ sup{
     line-height     :   0;
     position        :   relative;
     top             :   -0.5em;
+}
+
+dl{
+    background      :   @accent;
+    color           :   #fff;
+    margin-bottom   :   24px;
+    padding         :   24px;
+
+
+    //border-left     :   8px solid @accent;
+    /*margin-bottom   :   24px;
+    margin-top      :   -12px;
+    padding         :   12px 24px;*/
+
+    &:before{
+        content         :   "Usage:";
+        display         :   block;
+        font-size       :   15px;
+    }
+
+    /*code{
+        display         :   block;
+        font-size       :   17px;
+        font-weight     :   700;
+        //line-height     :   36px;
+    }
+
+    dt{
+        color           :   @accent;
+        font-family     :   @monoFont;
+        font-size       :   17px;
+        font-weight     :   700;
+        margin-left     :   48px;
+    }
+
+    dd{
+        font-size       :   15px;
+        margin-left     :   48px;
+        margin-bottom   :   24px;
+
+        &:last-child{
+            margin-bottom   :   0;
+        }
+    }*/
 }
 
 
@@ -331,6 +382,7 @@ nav.side{
     p.warning{
         background      :   @accent3;
         color           :   #fff;
+        font-size       :   16px;
         font-style      :   italic;
         padding         :   12px 24px;
 

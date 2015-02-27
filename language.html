@@ -15,10 +15,10 @@
             </div>
             <nav class = "top-nav">
                 <ul>
-                    <a href = "#language"><li class = "active">Language</li></a>
-                    <a href = "#interpreter"><li>Interpreter</li></a>
-                    <a href = ""><li>About</li></a>
-                    <a href = ""><li>Github</li></a>
+                    <a href = "./index.html"><li>About</li></a>
+                    <a href = ""><li class = "active">Language</li></a>
+                    <a href = "./interpreter.html"><li>Interpreter</li></a>
+                    <a href = "https://github.com/zjurelinac/Pljuska"><li>Github</li></a>
                 </ul>
             </nav>
         </div>
@@ -38,7 +38,7 @@
                             <li><h5><a href = "#variables">Variables</a></h5></li>
                             <li><h5><a href = "#arithmetic">Arithmetic</a></h5></li>
                             <li><h5><a href = "#conditions">Conditions</a></h5></li>
-                            <li><h5><a href = "control">Control statements</a></h5></li>
+                            <li><h5><a href = "#control">Control statements</a></h5></li>
                         </ul>
                     </li>
                     <li>
@@ -47,47 +47,31 @@
                             <li>
                                 <h5><a href = "#basic-cmds">Basic</a></h5>
                                 <ul class = "l2">
-                                    <li><h6>Panic &mdash; Show help</h6></li>
-                                    <li><h6>Ls &mdash; List directory contents</h6></li>
-                                    <li><h6>Cd &mdash; Change directory</h6></li>
-                                    <li><h6>Pwd &mdash; Print working<br/> directory</h6></li>
-                                    <li><h6>Cat &mdash; Show file contents</h6></li>
-                                    <li><h6>Hexdump &mdash; Show binary <br/>file contents</h6></li>
+                                    <li><h6><a href = "#cmd_panic">Panic &mdash; Show help</a></h6></li>
+                                    <li><h6><a href = "#cmd_ls">Ls &mdash; List directory contents</a></h6></li>
+                                    <li><h6><a href = "#cmd_cd">Cd &mdash; Change directory</a></h6></li>
+                                    <li><h6><a href = "#cmd_pwd">Pwd &mdash; Print working<br/> directory</a></h6></li>
+                                    <li><h6><a href = "#cmd_cat">Cat &mdash; Show file contents</a></h6></li>
+                                    <li><h6><a href = "#cmd_hexdump">Hexdump &mdash; Show binary <br/>file contents</a></h6></li>
                                  </ul>
                             </li>
                             <li>
-                                <h5>Filesystem</h5>
+                                <h5><a href = "#filesystem-cmds">Filesystem</a></h5>
                                 <ul class = "l2">
-                                    <li>
-                                        <h6>Create &mdash; Create file</h6>
-                                    </li>
-                                    <li>
-                                        <h6>Cp &mdash; Copy file</h6>
-                                    </li>
-                                    <li>
-                                        <h6>Mv &mdash; Move or rename a file</h6>
-                                    </li>
-                                    <li>
-                                        <h6>Rm &mdash; Remove file</h6>
-                                    </li>
-                                    <li>
-                                        <h6>Mkdir &mdash; Create new directory</h6>
-                                    </li>
-                                    <li>
-                                        <h6>Cpdir &mdash; Copy directory</h6>
-                                    </li>
-                                    <li>
-                                        <h6>Mvdir &mdash; Move or rename<br/> a directory</h6>
-                                    </li>
-                                    <li>
-                                        <h6>Rmdir &mdash; Remove directory</h6>
-                                    </li>
+                                    <li><h6><a href = "#cmd_create">Create &mdash; Create file</a></h6></li>
+                                    <li><h6><a href = "#cmd_cp">Cp &mdash; Copy file</a></h6></li>
+                                    <li><h6><a href = "#cmd_mv">Mv &mdash; Move or rename a file</a></h6></li>
+                                    <li><h6><a href = "#cmd_rm">Rm &mdash; Remove file</a></h6></li>
+                                    <li><h6><a href = "#cmd_mkdir">Mkdir &mdash; Create new directory</a></h6></li>
+                                    <li><h6><a href = "#cmd_cpdir">Cpdir &mdash; Copy directory</a></h6></li>
+                                    <li><h6><a href = "#cmd_mvdir">Mvdir &mdash; Move or rename<br/> a directory</a></h6></li>
+                                    <li><h6><a href = "#cmd_rmdir">Rmdir &mdash; Remove directory</a></h6></li>
                                 </ul>
                             </li>
                             <li>
-                                <h5>Other</h5>
+                                <h5><a href = "#other-cmds">Other</a></h5>
                                 <ul class = "l2">
-                                    <li><h6>Grep &mdash; String matching<br/> in files</h6></li>
+                                    <li><h6><a href = "#cmd_grep">Grep &mdash; Find string in file</a></h6></li>
                                 </ul>
                             </li>
                         </ul>
@@ -100,24 +84,26 @@
                     <h6><em>Overview and documentation of a HASH scripting language</em></h6>
                 </header>
                 <div class = "center-content">
+
                     <section class = "content-section">
                         <h3>Introduction</h3>
                         <p>Hash is a simple and easy-to-use scripting language. It's syntax
                         and commands are quite similar to other UNIX scripting languages,
                         so if you've ever used any of them, say Bash or Zsh, you'll
                         find Hash familiar and understandable.</p>
-                        <p>The documentation is divided in two parts. <a href = "">The first</a>
-                        deals with basic language syntax and features, while <a href = "">the
+                        <p>The documentation is divided in two parts. <a href = "#first">The first</a>
+                        deals with basic language syntax and features, while <a href = "#second">the
                         second</a> contains a short description and usage examples of every command
                         supported by Hash.</p>
                     </section>
-                    <section class = "content-section">
+
+                    <section class = "content-section" id = "first">
                         <h3>Language overview</h3>
                         <p>Here is a short overview of Hash language characteristics and features.
                         It's separated into smaller paragraphs, each describing one of the core
                         elements of the language.</p>
 
-                        <h4>Syntax</h4>
+                        <h4 id = "syntax">Syntax</h4>
                         <p><b>Hash language</b> script consists of a <b>series of statements</b>,
                         which can be either <em>commands, assignments or control statements</em>.
                         Statements are most often separated by newlines, though semicolons <code>;</code>
@@ -127,21 +113,21 @@
 <span class = "cmd">cd</span> <span class = "param">Documents/Bussiness</span>
 <span class = "var">$i</span> <span class = "op">=</span> <span class = "val">1</span>
 <span class = "ctrl">while</span> <span class = "op">[</span> <span class = "var">$i</span> <span class = "op">&lt;=</span> <span class = "val">12</span> <span class = "op">]{</span>
-    <span class = "cmd">mkdir</span> <span class = "str">"month_$i_notes"</span>
+    <span class = "var">$name</span> <span class = "op">=</span> <span class = "cmd">echo</span> <span class = "str">"month_"</span> <span class = "var">$i</span> <span class = "str">"_notes"</span>
+    <span class = "cmd">mkdir</span> <span class = "var">$name</span>
     <span class = "var">$i</span> <span class = "op">=</span> <span class = "var">$i</span> <span class = "op">+</span> <span class = "val">1</span>
 <span class = "op">}</span>
 </code></pre>
 
-                        <h4>Data types</h4>
+                        <h4 id = "datatypes">Data types</h4>
                         <p>Hash supports two separate data types: integers and strings, whereby
                         string values must be enclosed into double
                         quotes, <code>&quot;like this&quot;</code>. Integer values
                         support all the basic arithmetic operations: <em>addition, subtraction,
-                        multiplication, division and modulo</em>, while strings can contain variables
-                        whose values are inserted into it when the string is first used. Integer
+                        multiplication, division and modulo</em>. Integer
                         values are limited to the interval of <code>&lt;-2<sup>31</sup>, 2<sup>31</sup>&mdash;1&gt;</code></p>
 
-                        <h4>Variables</h4>
+                        <h4 id = "variables">Variables</h4>
                         <p>Variables in Hash can be of either string or integer type, but it's
                         type is changeable during program execution. Variables are always
                         identified by preceding a <code>$</code> symbol in front of their name.
@@ -151,9 +137,9 @@
                         some variable names are reserved for special purposes, like <code>$0</code>
                         which contains the script name, and <code>$1</code>, <code>$2</code>..., where
                         script arguments are automatically stored. Accidentally overriding their values
-                        could influence the behaviour of other functions.</p>
+                        could influence the behaviour of other functions. &ndash; <b>Not implemented yet</b></p>
 
-                        <h4>Arithmetic</h4>
+                        <h4 id = "arithmetic">Arithmetic</h4>
                         <p>Integer data type in Hash supports all basic arithmetic operations: <b>addition</b>
                         <code>+</code>, <b>subtraction</b> <code>&mdash;</code>, <b>multiplication</b><code>*</code>,
                         <b>division</b> <code>/</code> and <b>modulo</b> <code>%</code>. Their behaviour is the same
@@ -172,7 +158,7 @@
 <span class = "var">$year</span> <span class = "op">=</span> ( <span class = "var">$days</span> <span class = "op">-</span> <span class = "var">$days</span> <span class = "op">/</span> <span class = "val">1460</span> <span class = "op">+</span> <span class = "var">$days</span> / <span class = "val">36524</span> <span class = "op">-</span> <span class = "var">$days</span> <span class = "op">/</span> <span class = "val">146097</span> <span class = "op">) /</span> <span class = "val">365</span>
 </code></pre>
 
-                        <h4>Conditions</h4>
+                        <h4 id = "conditions">Conditions</h4>
                         <p>Conditions in HASH are created from simple comparisons between values and
                         variables, such as <code>$a >= 7</code>, which are combined using operators <b>and</b>
                         <code>&amp;&amp;</code>, <b>or</b> <code>||</code> and <b>not</b> <code>!</code>, together with
@@ -185,21 +171,102 @@
 <span class = "op">}</span>
 </code></pre>
 
-                        <h4>Control statements</h4>
+                        <h4 id = "control">Control statements</h4>
                         <p>Hash supports two types of control statements: <b>if&ndash;else statements</b> and
                         <b>while loops</b>. Both test a given condition, and based upon it determine
-                        what to do next. </p>
+                        what to do next.</p>
+                        <h5>If&ndash;else statement</h5>
+                        <p>A given condition is tested, and if it evaluates to <code>True</code>, first
+                        block is executed, otherwise the second is, if there is one.</p>
+                        <p class = "caption">Examples of if statements:</p>
+<pre><code><span class = "comment"># A simple if without an else</span>
+<span class = "ctrl">if</span> <span class = "op">[ </span><span class = "var">$variable</span> <span class = "op">&gt;= </span><span class = "val">4</span> <span class = "op">] {</span>
+    <span class = "comment"># Do something</span>
+<span class = "op">}</span>
+</code></pre>
+<pre><code><span class = "comment"># An if&ndash;else statement</span>
+<span class = "ctrl">if</span> <span class = "op">[ </span><span class = "var">$variable</span> <span class = "op">!= </span><span class = "val">7</span> <span class = "op">] {</span>
+    <span class = "comment"># Do something</span>
+<span class = "op">} </span><span class = "ctrl">else </span><span class = "op">{</span>
+    <span class = "comment"># Do something else</span>
+<span class = "op">}</span></code></pre>
+                        <h5>While loop</h5>
+                        <p>As long as the condition is satisfied, the corresponding block of code will
+                        be executed. If the condition is always true, the loop will run forever, and
+                        nothing after it will ever be reached.</p>
+                        <p class = "caption">Example of a while loop:</p>
+<pre><code><span class = "comment"># Print squares</span>
+<span class = "var">$n</span> <span class = "op">=</span> <span class = "val">1</span>
+<span class = "ctrl">while</span><span class = "op">[ </span><span class = "var">$n</span><span class = "op"> &lt;= </span><span class = "val">100</span> <span class = "op">] {</span>
+    <span class = "var">$x</span> <span class = "op">= </span><span class = "var">$a</span> <span class = "op">*</span> <span class = "var">$a</span>
+    <span class = "cmd">echo</span> <span class = "var">$x</span>
+    <span class = "var">$a</span><span class = "op"> = </span><span class = "var">$a</span><span class = "op"> + </span><span class = "val">1</span>
+<span class = "op">}</span>
+</code></pre>
                     </section>
-                    <section class = "content-section">
-                        <h3>Builtin commands</h3>
-                        <p>The language includes a number of predefined commands</p>
+                    <section class = "content-section" id = "second">
+                        <h3 id = "commands">Builtin commands</h3>
+                        <p>The language includes a number of basic commands expected for a shell to have, such as
+                        file and folder manipulation, basic searching, filesystem positioning etc.</p>
 
-                        <h4>Basic</h4>
+                        <h4 id = "basic-cmds">Basic</h4>
 
-                        <h5>Ls &mdash; List directory contents</h5>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellat quaerat doloremque obcaecati, esse reiciendis dolorum tempora facere vel alias distinctio ducimus similique doloribus quia ipsam aliquid officia? Quis, quae, voluptas!</p>
+                        <h5 id = "cmd_panic">Panic &mdash; Show help</h5>
+                        <p>This command shows helpful information about any given command. If no argument is provided,
+                        it instead displays a list of all supported commands.</p>
+                        <dl>
+                            <code>panic [command]</code>
+                            <dt>command</dt>
+                            <dd>A name of a command</dd>
+                        </dl>
+                        <p class = "caption">Example of panic output for cd command</p>
+<pre><code>========================================================================================
+    CD -- change working directory
+========================================================================================
 
-                        <h5>Cd &mdash; Change directory</h5>
+SYNTAX
+    cd [directory]
+
+WHERE
+    directory   -   Relative or absolute path to a directory which is to become
+                    a new working directory
+
+DESCRIPTION
+    The cd command changes the current working directory to the new one.
+    If no directory is provided as an argument, the user home folder is
+    set as working directory instead.
+</code></pre>
+
+                        <h5 id = "cmd_ls">Ls &mdash; List directory contents</h5>
+                        <p>List all the files and subdirectories contained in a given directory,
+                        first directories, and then files, sorted by name. If no arguments are
+                        provided, contents of the current working directory are listed.</p>
+
+                        <h5 id = "cmd_cd">Cd &mdash; Change directory</h5>
+                        <p>The cd command changes the current working directory to the new one. If
+                        no directory is provided as an argument, the user home folder is set as
+                        working directory instead.</p>
+
+                        <h5 id = "cmd_pwd">Pwd &mdash; Print working directory</h5>
+
+                        <h5 id = "cmd_cat">Cat &mdash; Show file contents</h5>
+
+                        <h5 id = "cmd_hexdump">Hexdump &mdash; Show binary file contents</h5>
+
+                        <h4 id = "filesystem-cmds">Filesystem</h4>
+
+                        <h5 id = "cmd_create">Create &mdash; Create file</h5>
+                        <h5 id = "cmd_cp">Cp &mdash; Copy file</h5>
+                        <h5 id = "cmd_mv">Mv &mdash; Move or rename a file</h5>
+                        <h5 id = "cmd_rm">Rm &mdash; Remove file</h5>
+                        <h5 id = "cmd_mkdir">Mkdir &mdash; Create new directory</h5>
+                        <h5 id = "cmd_cpdir">Cpdir &mdash; Copy directory</h5>
+                        <h5 id = "cmd_mvdir">Mvdir &mdash; Move or rename a directory</h5>
+                        <h5 id = "cmd_rmdir">Rmdir &mdash; Remove directory</h5>
+
+                        <h4 id = "other-cmds">Other commands</h4>
+                        <h5 id = "cmd_grep">Grep &mdash; Find string in file</h5>
+
                     </section>
                 </div>
             </div>

@@ -1,0 +1,31 @@
+# Extended GCD algorithm implementation in Hash, for numbers 124 and 33
+
+echo "hello"
+
+$xa = 1; $xb = 0; $xr = 124
+$ya = 0; $yb = 1; $yr = 33
+
+
+while [ $yr != 0 ] {
+
+    echo "[ " $xa ", " $xb " | " $xr " ]"
+    echo "[ " $ya ", " $yb " | " $yr " ]"
+    echo " "
+
+    $q = $xr / $yr
+
+    $t = $xa
+    $xa = $ya
+    $ya = $t - $q * $ya
+
+    $t = $xb
+    $xb = $yb
+    $yb = $t - $q * $yb
+
+    $t = $xr
+    $xr = $yr
+    $yr = $t - $q * $yr
+}
+
+
+echo "Results:: gcd = " $xr ", a = " $xa ", b = " $xb
