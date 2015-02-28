@@ -105,7 +105,7 @@ dl{
     margin-bottom   :   24px;
     padding         :   24px;
 
-    &:before{
+    &:before, h6{
         color           :   #ddd;
         content         :   "Usage:";
         //display         :   block;
@@ -131,6 +131,25 @@ dl{
     dd{
         color           :   #ddd;
         margin-left     :   58px;
+    }
+
+    .options{
+        overflow        :   hidden;
+
+        dt, dd{
+            float           :   left;
+            margin-top      :   12px;
+        }
+
+        dt{
+            clear           :   left;
+            width           :   24px;
+        }
+
+        dd{
+            clear           :   right;
+            margin-left     :   24px;
+        }
     }
 }
 

@@ -72,6 +72,7 @@
                                 <h5><a href = "#other-cmds">Other</a></h5>
                                 <ul class = "l2">
                                     <li><h6><a href = "#cmd_grep">Grep &mdash; Find string in file</a></h6></li>
+                                    <li><h6><a href = "#cmd_exit">Exit &mdash; Exit the program</a></h6></li>
                                 </ul>
                             </li>
                         </ul>
@@ -288,6 +289,7 @@ DESCRIPTION
                             <dt>file</dt>
                             <dd>A path to the textual file whose contents are to be displayed</dd>
                         </dl>
+                        <p></p>
 
                         <h5 id = "cmd_hexdump">Hexdump &mdash; Show binary file contents</h5>
                         <dl>
@@ -368,9 +370,24 @@ DESCRIPTION
 
                         <h5 id = "cmd_grep">Grep &mdash; Find string in file</h5>
                         <dl>
-                            <code>ls [directory]</code>
-                            <dt>directory</dt>
-                            <dd>A path to the directory whose contents should be displayed</dd>
+                            <code>grep [options] pattern input</code>
+                            <dt>pattern</dt>
+                            <dd>String literal whose occurrences are to be found</dd>
+                            <dt>input</dt>
+                            <dd>The input string which is searched for the pattern</dd>
+                            <div class = "options">
+                                <h6>Options:</h6>
+                                <dt>&ndash;c</dt>
+                                <dd>Return only the number of lines matched</dd>
+                                <dt>&ndash;i</dt>
+                                <dd>Perform the case-insensitive search</dd>
+                                <dt>&ndash;n</dt>
+                                <dd>Prepend each displayed line with it's line number</dd>
+                                <dt>&ndash;o</dt>
+                                <dd>Display only parts of the lines matching the given pattern</dd>
+                                <dt>&ndash;v</dt>
+                                <dd>Invert selection - display only lines NOT containing the pattern</dd>
+                            </div>
                         </dl>
                     </section>
                 </div>
