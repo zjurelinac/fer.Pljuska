@@ -105,42 +105,33 @@ dl{
     margin-bottom   :   24px;
     padding         :   24px;
 
-
-    //border-left     :   8px solid @accent;
-    /*margin-bottom   :   24px;
-    margin-top      :   -12px;
-    padding         :   12px 24px;*/
-
     &:before{
+        color           :   #ddd;
         content         :   "Usage:";
-        display         :   block;
+        //display         :   block;
         font-size       :   15px;
+        font-weight     :   700;
+        margin-right    :   12px;
     }
 
-    /*code{
-        display         :   block;
-        font-size       :   17px;
+    code{
+        color           :   @green;
+        font-size       :   18px;
         font-weight     :   700;
-        //line-height     :   36px;
     }
 
     dt{
-        color           :   @accent;
-        font-family     :   @monoFont;
+        color           :   #fff;
         font-size       :   17px;
         font-weight     :   700;
-        margin-left     :   48px;
+        margin-left     :   58px;
+        margin-top      :   12px;
     }
 
     dd{
-        font-size       :   15px;
-        margin-left     :   48px;
-        margin-bottom   :   24px;
-
-        &:last-child{
-            margin-bottom   :   0;
-        }
-    }*/
+        color           :   #ddd;
+        margin-left     :   58px;
+    }
 }
 
 
@@ -407,6 +398,14 @@ nav.side{
         code{
             color           :   #fafafa;
 
+            .prompt{
+                font-weight     :   700;
+            }
+
+            .input{
+                color           :   #eee;
+            }
+
             .comment{
                 color           :   #888;
             }
@@ -431,6 +430,16 @@ nav.side{
             .val, .str{
                 color           :   @green;
             }
+
+            .folder{
+                color           :   @blue;
+            }
+        }
+
+        .command-example{
+            background          :   @accent3;
+            margin              :   -12px -24px;
+            padding             :   12px 24px;
         }
     }
 }

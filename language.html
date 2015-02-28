@@ -212,15 +212,16 @@
                         <h4 id = "basic-cmds">Basic</h4>
 
                         <h5 id = "cmd_panic">Panic &mdash; Show help</h5>
-                        <p>This command shows helpful information about any given command. If no argument is provided,
-                        it instead displays a list of all supported commands.</p>
                         <dl>
                             <code>panic [command]</code>
                             <dt>command</dt>
-                            <dd>A name of a command</dd>
+                            <dd>Name of a command to show info about</dd>
                         </dl>
-                        <p class = "caption">Example of panic output for cd command</p>
-<pre><code>========================================================================================
+                        <p>This command shows helpful information about any given command. If no argument is provided,
+                        it instead displays a list of all supported commands.</p>
+                        <p class = "caption">Example of panic output for cd command:</p>
+<pre><code><div class = "command-example"><span class = "prompt">&lambda;&gt;</span> <span class = "input">panic cd</span></div>
+========================================================================================
     CD -- change working directory
 ========================================================================================
 
@@ -238,35 +239,139 @@ DESCRIPTION
 </code></pre>
 
                         <h5 id = "cmd_ls">Ls &mdash; List directory contents</h5>
-                        <p>List all the files and subdirectories contained in a given directory,
-                        first directories, and then files, sorted by name. If no arguments are
-                        provided, contents of the current working directory are listed.</p>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
+                        <p>Shows directory contents, both files and subdirectories. Subdirectories are listed first,
+                            followed by all the files. Special directories, such as <code>.</code> and <code>..</code>
+                            are not show. All items are sorted alphabetically.</p>
+                        <p>If no argument is provided, the command lists contents of the current directory.</p>
+                        <p class = "caption">An example of ls command output:</p>
+<pre><code><div class = "command-example"><span class = "prompt">&lambda;&gt;</span> <span class = "input">ls $HOME</span></div>
+<span class = "folder">Desktop</span>
+<span class = "folder">Documents</span>
+<span class = "folder">Downloads</span>
+<span class = "folder">Music</span>
+<span class = "folder">Pictures</span>
+<span class = "folder">Videos</span>
+<span class = "file">.bashrc</span>
+<span class = "file">.profile</span>
+<span class = "file">log.txt</span>
+<span class = "file">paper.pdf</span>
+</code></pre>
 
                         <h5 id = "cmd_cd">Cd &mdash; Change directory</h5>
+                        <dl>
+                            <code>cd [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory which is to become the new working directory</dd>
+                        </dl>
                         <p>The cd command changes the current working directory to the new one. If
                         no directory is provided as an argument, the user home folder is set as
                         working directory instead.</p>
 
                         <h5 id = "cmd_pwd">Pwd &mdash; Print working directory</h5>
+                        <dl>
+                            <code>pwd</code>
+                        </dl>
+                        <p>The pwd command outputs the path to the current working directory on the screen.</p>
+                        <p class = "caption">Pwd command example:</p>
+<pre><code><div class = "command-example"><span class = "prompt">&lambda;&gt;</span> <span class = "input">pwd</span></div>
+/home/user/Documents
+</code></pre>
 
                         <h5 id = "cmd_cat">Cat &mdash; Show file contents</h5>
+                        <dl>
+                            <code>cat [file]</code>
+                            <dt>file</dt>
+                            <dd>A path to the textual file whose contents are to be displayed</dd>
+                        </dl>
 
                         <h5 id = "cmd_hexdump">Hexdump &mdash; Show binary file contents</h5>
+                        <dl>
+                            <code>hexdump [file]</code>
+                            <dt>file</dt>
+                            <dd>A path to the binary file whose contents are to be displayed</dd>
+                        </dl>
+
+
 
                         <h4 id = "filesystem-cmds">Filesystem</h4>
 
                         <h5 id = "cmd_create">Create &mdash; Create file</h5>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
+
+
                         <h5 id = "cmd_cp">Cp &mdash; Copy file</h5>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
+
+
                         <h5 id = "cmd_mv">Mv &mdash; Move or rename a file</h5>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
+
+
                         <h5 id = "cmd_rm">Rm &mdash; Remove file</h5>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
+
+
                         <h5 id = "cmd_mkdir">Mkdir &mdash; Create new directory</h5>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
+
+
                         <h5 id = "cmd_cpdir">Cpdir &mdash; Copy directory</h5>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
+
+
                         <h5 id = "cmd_mvdir">Mvdir &mdash; Move or rename a directory</h5>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
+
+
                         <h5 id = "cmd_rmdir">Rmdir &mdash; Remove directory</h5>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
+
 
                         <h4 id = "other-cmds">Other commands</h4>
-                        <h5 id = "cmd_grep">Grep &mdash; Find string in file</h5>
 
+                        <h5 id = "cmd_grep">Grep &mdash; Find string in file</h5>
+                        <dl>
+                            <code>ls [directory]</code>
+                            <dt>directory</dt>
+                            <dd>A path to the directory whose contents should be displayed</dd>
+                        </dl>
                     </section>
                 </div>
             </div>
